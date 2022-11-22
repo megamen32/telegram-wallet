@@ -33,7 +33,12 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
         markup = InlineKeyboardMarkup()
         texts = ''
         for i, income in enumerate(bids):
-            texts += f'{i})  {income.description} {income.amount} id:{income.id} от {income.author.name}\n'
+            expanses = list(
+                Expanse.select(Expanse).where(Expanse.parent_bid == income))
+            totals=0
+            if expanses[0].id is not None:
+                totals = sum(map(operator.attrgetter('amount'), expanses))
+            texts += f'{i})  {income.description} {income.amount}-{totals}={income.amount-totals} id:{income.id} от {income.author.name}\n'
             kb = InlineKeyboardButton(f"{i}) {income.amount} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
             markup.add(kb)
         await message.reply(texts, reply_markup=markup)
@@ -102,7 +107,7 @@ async def new_expanse_handler(message: Message, user: User):
             totals = 0
             expanses = list(
                 Expanse.select(Expanse).where(Expanse.parent_bid == bid))
-            if expanses[0].id is not None:
+            if any(expanses) and expanses[0].id is not None:
                 totals = sum(map(operator.attrgetter('amount'), expanses))
             texts += f'\n{i}) {bid.author.name} {bid.amount}-{totals}={bid.amount-totals} id:{bid.id} {bid.description} finish:{bid.closed} rating:{bid.calc_aprove_rating()}'
             spendings=bid.amount
