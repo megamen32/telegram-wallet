@@ -3,7 +3,7 @@ from datetime import datetime
 from peewee import BigIntegerField, CharField, BooleanField, DateTimeField,ForeignKeyField
 
 from .base import BaseModel
-from .person import Person
+from .person import Person, Role
 
 
 class User(BaseModel):
@@ -22,3 +22,7 @@ class User(BaseModel):
 
     class Meta:
         table_name = 'users'
+
+
+def get_voting_persons():
+    return list(Person.select().join(Role).where(Role.role == 'admin' or Role.role == 'voting'))

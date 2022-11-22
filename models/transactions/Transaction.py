@@ -7,7 +7,7 @@ from models.base import BaseModel
 from models.person import Person
 
 class Wallet(BaseModel):
-    id=PrimaryKeyField()
+    id=PrimaryKeyField(primary_key=True)
     start_balance=FloatField(default=0)
 
 def get_default_wallet():

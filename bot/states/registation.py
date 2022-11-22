@@ -16,7 +16,14 @@ def get_registration_state()->State:
 async def name_handler(message: Message, user: User,state:FSMContext):
     name=message.text
     role='admin' if user.is_admin else 'user'
-    user.person=Person.create(name=name,role=get_role(role))
+    if user.person is None:
+        user.person=Person.create(name=name,role=get_role(role))
+
+    else:
+        person=Person.get(Person.name==user.person.name)
+        person.name=name
+        person.save()
+        user.person=person
     user.save()
     await state.finish()
     text = _('Hi {full_name}!\n'

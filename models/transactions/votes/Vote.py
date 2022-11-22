@@ -10,5 +10,3 @@ class Vote(BaseModel):
     choice=IntegerField()
     parent=ForeignKeyField(Bid, related_name='parent')
 
-def get_votes(bid):
-    return Vote.select(Vote.parent==bid)
