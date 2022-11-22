@@ -12,6 +12,7 @@ from models.transactions.Transaction import TransactionBase
 
 class Bid(TransactionBase): #vote for budget
     closed=BooleanField(default=False)
+    was_used=BooleanField(default=False)
     approved=BooleanField(default=False)
     time_approved=DateTimeField(default=None,null=True)
     parent_income=ForeignKeyField(Income,related_name='expense')

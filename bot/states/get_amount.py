@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State,StatesGroup
-from aiogram.types import User
+from aiogram.types import User,ReplyKeyboardRemove
 
 from loader import dp
 class TransactionForm(StatesGroup):
@@ -14,7 +14,7 @@ def get_amount_state():return TransactionForm.amount
 async def amount_handler(message:types.Message,user:User,state:FSMContext):
     amount=float(message.text)
     await TransactionForm.next()
-    await message.answer('Напиши описание')
+    await message.answer('Напиши описание',reply_markup=ReplyKeyboardRemove())
     await state.update_data(amount=amount)
 
 @dp.message_handler(state=TransactionForm.description)

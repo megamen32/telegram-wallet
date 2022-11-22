@@ -34,7 +34,7 @@ stop:
 	docker-compose stop
 
 db_revision:
-	pw_migrate create --auto --database ${DATABASE_URL} --directory ${MIGRATIONS_PATH} ${RUN_ARGS}
+	pw_migrate create --auto --database ${DATABASE_URL} -v --directory ${MIGRATIONS_PATH} ${RUN_ARGS}
 
 db_upgrade:
 	pw_migrate migrate --database ${DATABASE_URL} --directory ${MIGRATIONS_PATH}

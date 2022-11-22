@@ -5,14 +5,15 @@ from loader import _, bot, i18n
 
 def get_default_commands(lang: str = 'en') -> list[BotCommand]:
     commands = [
-        BotCommand('/start', _('start bot', locale=lang)),
-        BotCommand('/help', _('how it works?', locale=lang)),
-        BotCommand('/settings', _('open bot settings', locale=lang)),
+        BotCommand('/cancel', _('отменить текущее действие', locale=lang)),
+        BotCommand('/income', _('создать новое Поступление', locale=lang)),
+        BotCommand('/bid', _('создать заявку на бюджет', locale=lang)),
+        BotCommand('/bids', _('посмотреть заявки на бюджет', locale=lang)),
+        BotCommand('/expense', _('создать новую трату', locale=lang)),
+        BotCommand('/wallet', _('Посмотреть кошелек', locale=lang)),
         BotCommand('/name', _('change name', locale=lang)),
-        BotCommand('/wallet', _('see wallet', locale=lang)),
-        BotCommand('/income', _('create new income', locale=lang)),
-        BotCommand('/expense', _('create new expense', locale=lang)),
-        BotCommand('/bid', _('create vote for budget', locale=lang)),
+        BotCommand('/settings', _('open bot settings', locale=lang)),
+        BotCommand('/help', _('how it works?', locale=lang)),
     ]
 
     return commands

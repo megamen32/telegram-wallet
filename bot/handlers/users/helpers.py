@@ -29,6 +29,6 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 async def _default_menu(message: Message, user: User,state:FSMContext):
     cur_state=await state.get_state()
     await message.answer(_('Я не понимаю чего ты от меня хочешь'), reply_markup=get_default_markup(user))
-    if any(cur_state):
+    if cur_state is not None:
         return await message.answer(_('нажми /cancel чтобы отменить текущее действие'), reply_markup=get_default_markup(user))
 

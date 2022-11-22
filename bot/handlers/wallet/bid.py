@@ -20,7 +20,7 @@ from models.transactions.Transaction import get_default_wallet
 bid_cb=CallbackData('choice_bid','bid')
 income_cb=CallbackData('choice_income','id','amount')
 
-
+@dp.message_handler(i18n_text='Заявка 📲')
 @dp.message_handler(commands='bid')
 async def new_bid_handler(message: Message, user: User,state:FSMContext):
     try:
@@ -30,8 +30,8 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
         markup = InlineKeyboardMarkup()
         texts = ''
         for i, income in enumerate(bids):
-            texts += f'{i}{income.author.name}{income.description} {income.amount} id:{income.id}\n'
-            kb = InlineKeyboardButton(f"{i} {income.amount} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
+            texts += f'{i})  {income.description} {income.amount} id:{income.id} от {income.author.name}\n'
+            kb = InlineKeyboardButton(f"{i}) {income.amount} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
             markup.add(kb)
         await message.reply(texts, reply_markup=markup)
     except:
@@ -86,7 +86,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
         logging.error(err)
         await query.message.reply(err)
 
-
+@dp.message_handler(i18n_text='Заявки')
 @dp.message_handler(commands='bids')
 async def new_expanse_handler(message: Message, user: User):
 

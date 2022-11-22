@@ -10,10 +10,10 @@ from models.transactions.Expense import Expanse
 from models.transactions.Income import Income
 from models.transactions.Transaction import get_default_wallet
 
-
+@dp.message_handler(i18n_text='Кошелек 💱')
 @dp.message_handler(commands='wallet')
 async def ask_register(message:types.Message):
-    await message.reply('Текуший баланс')
+    await message.reply('Текущий баланс')
     try:
         query = (Person
                  .select(Person, fn.SUM(Expanse.amount).alias('transaction_amount'),fn.COUNT(Expanse.id).alias('transaction_count'),)
@@ -26,17 +26,21 @@ async def ask_register(message:types.Message):
         wallet=get_default_wallet()
 
         trs=Income.select().where(Income.wallet==wallet).order_by(Income.created_at)
-
+        total_sum=0
+        total_expense=0
         for tr in trs:
             exp = Expanse.select().join(Bid).where(Bid.parent_income==tr).order_by(Expanse.created_at)
             exp=list(exp)
             sum=tr.amount
+            total_sum += sum
             text=''
             for tr2 in exp:
+                total_expense+=tr2.amount
                 sum-=tr2.amount
-                text += f'\n\t\tБ-с:{sum} Трата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at} {tr2.description}'
+                text += f'\n\t\tТрата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at} Б-с:{sum} {tr2.description} '
             await message.reply(f'Поступление {tr.amount} {tr.description} {tr.created_at} Осталось:{sum}{text}')
 
+        await message.answer(f'Доход {total_sum} Расход {total_expense} Итоговый баланс {total_sum-total_expense}')
     except:
         err=traceback.format_exc()
         await message.answer(err)

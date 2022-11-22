@@ -11,7 +11,7 @@ from models import User
 from models.transactions.Income import Income
 from models.transactions.Transaction import get_default_wallet
 
-
+@dp.message_handler(i18n_text='Поступление ✅')
 @dp.message_handler(commands='income')
 async def new_income_handler(message:Message,user:User,state:FSMContext):
     try:
