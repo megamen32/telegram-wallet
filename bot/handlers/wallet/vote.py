@@ -22,7 +22,7 @@ async def create_vote_handler(query: Message, user: User, callback_data):
         prev_vote=Vote.get_or_none(Vote.parent == bid , Vote.person==user.person)
         if prev_vote is not None:
             return await query.answer('Вы уже голосовали')
-        if bid.approved:
+        if bid.closed:
             return await query.answer('Решение уже вынесено')
 
         Vote.create(person=user.person,choice=choice,parent=bid)

@@ -16,7 +16,7 @@ from models.transactions.Transaction import get_default_wallet
 async def new_expanse_handler(message: Message, user: User):
 
     try:
-        bids=Bid.select().where(Bid.author==user.person,Bid.approved==True)
+        bids=Bid.select().where(Bid.author == user.person, Bid.closed == True)
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
@@ -38,7 +38,7 @@ async def create_expanse_handler(query: types.CallbackQuery,user:User, callback_
 
     bid=Bid.get(Bid.id==bid_id)
     amount=bid.amount
-    if bid.approved:
+    if bid.closed:
         expance=Expanse.create(parent_bid=bid,amount=amount,author=user.person,wallet=get_default_wallet())
         await query.message.reply(f'Новая трата в размере {amount}, создана! ')
     else:

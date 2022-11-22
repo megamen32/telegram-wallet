@@ -96,7 +96,7 @@ async def new_expanse_handler(message: Message, user: User):
         texts=''
         for i,bid in enumerate(bids):
             bid.check_votes()
-            texts += f'{i}) {bid.author.name} {bid.amount} id:{bid.id} {bid.description} finish:{bid.approved} rating:{bid.calc_aprove_rating()}\n'
+            texts += f'{i}) {bid.author.name} {bid.amount} id:{bid.id} {bid.description} finish:{bid.closed} rating:{bid.calc_aprove_rating()}\n'
 
         await message.reply(texts)
     except:

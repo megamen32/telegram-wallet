@@ -11,6 +11,7 @@ from models.transactions.Transaction import TransactionBase
 
 
 class Bid(TransactionBase): #vote for budget
+    closed=BooleanField(default=False)
     approved=BooleanField(default=False)
     time_approved=DateTimeField(default=None,null=True)
     parent_income=ForeignKeyField(Income,related_name='expense')
@@ -35,8 +36,9 @@ class Bid(TransactionBase): #vote for budget
         return list(Vote.select().where(Vote.parent==self))
     def check_votes(self):
         res=self.is_approved()
-        if not self.approved and res:
-            self.approved=True
+        if not self.closed and self.is_complete():
+            self.closed=True
             self.time_approved=datetime.utcnow()
+            self.approved=res
             self.save()
         return res
