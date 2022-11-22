@@ -15,7 +15,7 @@ class Bid(TransactionBase): #vote for budget
     was_used=BooleanField(default=False)
     approved=BooleanField(default=False)
     time_approved=DateTimeField(default=None,null=True)
-    parent_income=ForeignKeyField(Income,related_name='expense')
+    parent_income=ForeignKeyField(Income,related_name='expenses')
     def is_complete(self):
         votes=self.get_votes()
         users=get_voting_persons()

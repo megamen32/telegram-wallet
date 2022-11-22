@@ -10,7 +10,7 @@ class TransactionForm(StatesGroup):
 
 def get_amount_state():return TransactionForm.amount
 
-@dp.message_handler(state=get_amount_state())
+@dp.message_handler(state=get_amount_state(),regexp='\d+')
 async def amount_handler(message:types.Message,user:User,state:FSMContext):
     amount=float(message.text)
     await TransactionForm.next()

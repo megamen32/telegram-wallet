@@ -1,17 +1,20 @@
 import asyncio
 import logging
+import operator
 import re
 import traceback
 
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
+from peewee import fn
 
 from bot.handlers.wallet.bid_utils import bid_to_telegram
 from bot.states.get_amount import get_amount_state
 from loader import dp, bot
 from models import User
 from models.person import get_role, get_voting_roles, Person
+from models.transactions.Expense import Expanse
 from models.user import get_voting_persons
 from models.transactions.Bid import Bid
 from models.transactions.Income import Income
@@ -96,8 +99,16 @@ async def new_expanse_handler(message: Message, user: User):
         texts=''
         for i,bid in enumerate(bids):
             bid.check_votes()
-            texts += f'{i}) {bid.author.name} {bid.amount} id:{bid.id} {bid.description} finish:{bid.closed} rating:{bid.calc_aprove_rating()}\n'
-
+            totals = 0
+            expanses = list(
+                Expanse.select(Expanse).where(Expanse.parent_bid == bid))
+            if expanses[0].id is not None:
+                totals = sum(map(operator.attrgetter('amount'), expanses))
+            texts += f'\n{i}) {bid.author.name} {bid.amount}-{totals}={bid.amount-totals} id:{bid.id} {bid.description} finish:{bid.closed} rating:{bid.calc_aprove_rating()}'
+            spendings=bid.amount
+            for tr2 in expanses:
+                spendings -= tr2.amount
+                texts += f'\n\t\tТрата -{tr2.amount} от"{tr2.author.name}" {tr2.created_at} Б-с:{spendings} {tr2.description} '
         await message.reply(texts)
     except:
         err = traceback.format_exc()
