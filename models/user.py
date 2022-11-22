@@ -1,13 +1,15 @@
 from datetime import datetime
 
-from peewee import BigIntegerField, CharField, BooleanField, DateTimeField
+from peewee import BigIntegerField, CharField, BooleanField, DateTimeField,ForeignKeyField
 
 from .base import BaseModel
+from .person import Person
 
 
 class User(BaseModel):
     id = BigIntegerField(primary_key=True)
     name = CharField(default=None)
+    person=ForeignKeyField(Person,default=None,null=True)
     username = CharField(default=None, null=True)
     language = CharField(default='en')
 

@@ -7,8 +7,12 @@ def get_default_commands(lang: str = 'en') -> list[BotCommand]:
     commands = [
         BotCommand('/start', _('start bot', locale=lang)),
         BotCommand('/help', _('how it works?', locale=lang)),
-        BotCommand('/lang', _('change language', locale=lang)),
         BotCommand('/settings', _('open bot settings', locale=lang)),
+        BotCommand('/name', _('change name', locale=lang)),
+        BotCommand('/wallet', _('see wallet', locale=lang)),
+        BotCommand('/income', _('create new income', locale=lang)),
+        BotCommand('/expense', _('create new expense', locale=lang)),
+        BotCommand('/bid', _('create vote for budget', locale=lang)),
     ]
 
     return commands
