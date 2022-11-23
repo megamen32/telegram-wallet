@@ -6,6 +6,7 @@ from peewee import fn, JOIN
 
 from bot.keyboards.default import get_default_markup
 from loader import dp, _
+from models import User
 from models.person import Person
 from models.transactions.Bid import Bid
 from models.transactions.Expense import Expanse
@@ -14,7 +15,7 @@ from models.transactions.Transaction import get_default_wallet
 
 @dp.message_handler(i18n_text='Кошелек 💱')
 @dp.message_handler(commands='wallet')
-async def ask_register(message:types.Message):
+async def wallet_handler(message:types.Message,user:User):
     await message.reply('Текущий баланс')
     try:
         query = (Person
