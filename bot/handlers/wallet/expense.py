@@ -78,6 +78,7 @@ async def spendigs(message:Message,user:User):
             kb= create_delete_kb(exp)
             text=f'{exp.amount} {exp.description} {exp.created_at}\n\t\tзаявка->{exp.parent_bid.amount} {exp.parent_bid.description}'
             await message.answer(text,reply_markup=kb)
+        if not any(expanses): await message.answer('У вас нет трат')
     except:
         err = traceback.format_exc()
         logging.error(err)

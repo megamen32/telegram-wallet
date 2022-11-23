@@ -27,10 +27,11 @@ async def list_bids_handler(message:Message,user:User):
             else:
 
                 kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at}\n\t\tПоступление->{exp.parent_income.amount} {exp.parent_income.description}'
+            text=f'{exp.amount} {exp.description} {exp.created_at}\n'
+            text+=f'\t\tПоступление->{exp.parent_income.amount} {exp.parent_income.description}'
             await message.answer(text,reply_markup=kb)
-    except DoesNotExist:
-        await message.answer('У вас нет заявок')
+        if not any(expanses): await message.answer('У вас нет заявок')
+
     except:
         err = traceback.format_exc()
         logging.error(err)
@@ -48,6 +49,7 @@ async def list_incomes_handler(message:Message,user:User):
                 kb= create_delete_kb(exp)
             text=f'{exp.amount} {exp.description} {exp.created_at}\n\t\t'
             await message.answer(text,reply_markup=kb)
+        if not any(expanses):await message.answer('У вас нет поступлений')
     except DoesNotExist:
         await message.answer('У вас нет поступлений')
     except:
@@ -62,6 +64,7 @@ async def list_votes(message:Message,user:User):
         for bid in bids:
             kb, text = bid_to_telegram(bid, user.person)
             asyncio.create_task(message.answer( text, reply_markup=kb))
+        if not any(bids): await message.answer('Нет активных голосований')
     except DoesNotExist:
         await message.answer('Нет активных голосований')
     except:
