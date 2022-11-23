@@ -42,13 +42,15 @@ async def change_role(message: Message):
     try:
         users = get_users()
         for user in users:
-            text=f"{user.person.name} tg:'{user.name}' {user.person.role.role}"
+            try:
+                text=f"{user.person.name} tg:'{user.name}' {user.person.role.role}"
 
-            kb=InlineKeyboardMarkup()
-            for role in Role.select():
-                if role==user.person.role:continue
-                kb.add(InlineKeyboardButton(f'Поменять роль на {role.role}',callback_data=change_role_cb.new(id=user.id,role=role.role)))
-            await message.answer(text,reply_markup=kb)
+                kb=InlineKeyboardMarkup()
+                for role in Role.select():
+                    if role==user.person.role:continue
+                    kb.add(InlineKeyboardButton(f'Поменять роль на {role.role}',callback_data=change_role_cb.new(id=user.id,role=role.role)))
+                await message.answer(text,reply_markup=kb)
+            except:logging.error(traceback.format_exc())
     except:
         err = traceback.format_exc()
         logging.error(err)
@@ -58,11 +60,13 @@ async def change_role_handler(query:CallbackQuery,user:User,callback_data):
     id=callback_data['id']
     role_str=callback_data['role']
     role=get_role(role_str)
+
     user=User.get_by_id(id)
     person=Person.get(Person.name==user.person.name)
     person.role=role
     person.save()
-    user.person.role=role
+    user.person=person
+    user.is_admin=role_str=='admin'
     user.save()
     await query.message.answer(f'{person.name} role is {role.role}')
 

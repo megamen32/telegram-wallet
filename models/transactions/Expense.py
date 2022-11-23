@@ -6,4 +6,4 @@ from models.transactions.Bid import Bid
 
 
 class Expanse(Transaction):
-    parent_bid=ForeignKeyField(Bid, related_name='bids')
+    parent_bid=ForeignKeyField(Bid, related_name='bids',backref='expenses')

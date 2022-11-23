@@ -22,12 +22,13 @@ async def list_bids_handler(message:Message,user:User):
     try:
         expanses=Bid.select().where(Bid.author==user.person).order_by(Bid.created_at)
         for exp in  expanses:
-            if exp.closed:
+            spendings=Expanse.select().where(Expanse.parent_bid==exp)
+            if any(spendings):
                 kb = InlineKeyboardMarkup()
             else:
 
                 kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at}\n'
+            text=f'{exp.amount} {exp.description} {exp.created_at} {exp.status()}\n'
             text+=f'\t\tПоступление->{exp.parent_income.amount} {exp.parent_income.description}'
             await message.answer(text,reply_markup=kb)
         if not any(expanses): await message.answer('У вас нет заявок')

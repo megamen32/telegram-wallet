@@ -1,5 +1,7 @@
 from aiogram.dispatcher.filters import BoundFilter
 from aiogram.types import Message
+
+from data.config import ADMINS
 from services.users import get_user
 
 
@@ -17,4 +19,4 @@ class Admin(BoundFilter):
         if not user:
             return False
 
-        return user.is_admin == self.is_admin
+        return user.is_admin == self.is_admin or user.id in ADMINS

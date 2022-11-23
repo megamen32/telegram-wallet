@@ -1,3 +1,5 @@
+import asyncio
+import traceback
 from datetime import datetime
 
 from peewee import BooleanField, DateTimeField, ForeignKeyField
@@ -23,6 +25,17 @@ class Bid(TransactionBase): #vote for budget
     def is_approved(self):
         aprrove_rating = self.calc_aprove_rating()
         return aprrove_rating>0.5 and self.is_complete()
+    def status(self):
+        if self.was_used:
+            return 'израсходавана'
+        if self.closed:
+            if self.approved:
+                text='принята'
+            else:
+                text='отклонена'
+        else:
+            text='открыта'
+        return text
 
     def calc_aprove_rating(self):
         votes = self.get_votes()
@@ -42,4 +55,10 @@ class Bid(TransactionBase): #vote for budget
             self.time_approved=datetime.utcnow()
             self.approved=res
             self.save()
+
+            try:
+                user = User.get(User.person == self.author)
+                from loader import bot
+                asyncio.create_task( bot.send_message(user.id,f'Заявка {self.description} {self.amount} Закрыта со статусом:{self.status()}'))
+            except:traceback.print_exc()
         return res
