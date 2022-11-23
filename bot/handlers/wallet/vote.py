@@ -4,7 +4,7 @@ import traceback
 
 from aiogram.types import Message
 from aiogram.utils.callback_data import CallbackData
-
+from peewee import DoesNotExist
 
 from loader import dp
 from models import User
@@ -29,6 +29,8 @@ async def create_vote_handler(query: Message, user: User, callback_data):
         bid.check_votes()
         kb, text = bid_to_telegram(bid,user.person)
         await query.message.edit_text(text,reply_markup=kb)
+    except DoesNotExist:
+        await query.message.edit_text('Голосвание удаленно')
     except:
         err = traceback.format_exc()
         logging.error(err)

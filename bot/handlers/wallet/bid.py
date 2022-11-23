@@ -10,6 +10,7 @@ from aiogram.utils.callback_data import CallbackData
 from peewee import fn
 
 from bot.handlers.wallet.bid_utils import bid_to_telegram
+from bot.handlers.wallet.remove_entity import create_delete_kb
 from bot.states.get_amount import get_amount_state
 from loader import dp, bot
 from models import User
@@ -36,7 +37,7 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
             expanses = list(
                 Expanse.select(Expanse).where(Expanse.parent_bid == income))
             totals=0
-            if expanses[0].id is not None:
+            if any(expanses) and expanses[0].id is not None:
                 totals = sum(map(operator.attrgetter('amount'), expanses))
             texts += f'{i})  {income.description} {income.amount}-{totals}={income.amount-totals} id:{income.id} от {income.author.name}\n'
             kb = InlineKeyboardButton(f"{i}) {income.amount} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
@@ -86,7 +87,8 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
         description=data['description']
         parent_income=Income.get(Income.id==income_id)
         bid = Bid.create(amount=amount, author=user.person, wallet=get_default_wallet(),parent_income=parent_income,description=description)
-        await query.message.reply(f'Новое Голосование в размере {amount} с целью {bid.description} начато')
+
+        await query.message.reply(f'Новое Голосование в размере {amount} с целью {bid.description} начато',reply_markup=create_delete_kb(bid))
         await state.finish()
         await send_all_bid(bid)
     except:

@@ -8,11 +8,11 @@ def get_default_markup(user):
 
    # markup.add(_('Help 🆘'), _('Settings 🛠'))
     markup.add(_('Заявка 📲'), _('Трата 💸'),_('Поступление ✅ '))
-    markup.add(_('Заявки'),_('Кошелек 💱'))
+    markup.add(_('Заявки'),_('Последние Траты'),_('Кошелек 💱'))
+    markup.add(_('Мои Заявки'),_('Поступления'))
 
     if user.is_admin:
-        markup.add(_('Export users 📁'))
-        markup.add(_('Count users 👥'))
+        markup.add(_('change role'))
         markup.add(_('Count active users 👥'))
 
     if len(markup.keyboard) < 1:

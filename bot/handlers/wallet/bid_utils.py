@@ -9,7 +9,7 @@ bid_voting_cb=CallbackData('bid_voting','bid_id','choice')
 def bid_to_telegram(bid,person=None):
     kb = InlineKeyboardMarkup()
     votes = list(Vote.select().where(Vote.parent == bid))
-    text = f'{bid.description} {bid.amount}'
+    text = f'Новая заявка на бюджет в размере {bid.amount} от {bid.author.name} со средств {bid.parent_income.description} {bid.parent_income.amount}\n\t\tописание: {bid.description}'
     for v in votes:
         text += f'\n{v.person.name}: {v.choice}'
     y = InlineKeyboardButton('Yes', callback_data=bid_voting_cb.new(bid_id=bid.id, choice=1))

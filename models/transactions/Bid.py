@@ -11,11 +11,11 @@ from models.transactions.Transaction import TransactionBase
 
 
 class Bid(TransactionBase): #vote for budget
-    closed=BooleanField(default=False)
-    was_used=BooleanField(default=False)
-    approved=BooleanField(default=False)
+    closed=BooleanField(default=False) #решение уже вынесено
+    was_used=BooleanField(default=False) #пока фалсе можно создавать траты
+    approved=BooleanField(default=False) #какое решение было вынесено по заявки
     time_approved=DateTimeField(default=None,null=True)
-    parent_income=ForeignKeyField(Income,related_name='expenses')
+    parent_income=ForeignKeyField(Income,backref='expenses')
     def is_complete(self):
         votes=self.get_votes()
         users=get_voting_persons()

@@ -1,8 +1,13 @@
 import csv
+import logging
+import traceback
 
-from aiogram.types import Message, InputFile
+from aiogram.types import Message, InputFile, InlineKeyboardMarkup, InlineKeyboardButton,CallbackQuery
+from aiogram.utils.callback_data import CallbackData
 
 from loader import dp, bot, config, _
+from models import User
+from models.person import Role, get_role, Person
 from services.users import count_users, get_users
 
 
@@ -30,6 +35,36 @@ async def _users_count(message: Message):
     count = count_users()
 
     await message.answer(_('Total users: {count}').format(count=count))
+
+change_role_cb=CallbackData('change_role','id','role')
+@dp.message_handler(i18n_text='change role', is_admin=True)
+async def change_role(message: Message):
+    try:
+        users = get_users()
+        for user in users:
+            text=f"{user.person.name} tg:'{user.name}' {user.person.role.role}"
+
+            kb=InlineKeyboardMarkup()
+            for role in Role.select():
+                if role==user.person.role:continue
+                kb.add(InlineKeyboardButton(f'Поменять роль на {role.role}',callback_data=change_role_cb.new(id=user.id,role=role.role)))
+            await message.answer(text,reply_markup=kb)
+    except:
+        err = traceback.format_exc()
+        logging.error(err)
+        await message.answer(err)
+@dp.callback_query_handler(change_role_cb.filter())
+async def change_role_handler(query:CallbackQuery,user:User,callback_data):
+    id=callback_data['id']
+    role_str=callback_data['role']
+    role=get_role(role_str)
+    user=User.get_by_id(id)
+    person=Person.get(Person.name==user.person.name)
+    person.role=role
+    person.save()
+    user.person.role=role
+    user.save()
+    await query.message.answer(f'{person.name} role is {role.role}')
 
 
 @dp.message_handler(i18n_text='Count active users 👥', is_admin=True)
