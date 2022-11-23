@@ -69,7 +69,7 @@ async def create_expanse_handler(query: types.CallbackQuery,user:User, callback_
         await query.message.reply(f'Заявка еще не одобрена!')
 
 
-@dp.message_handler(i18n_text='Последние Траты')
+@dp.message_handler(i18n_text='Мои Последние Траты')
 @dp.message_handler(commands='expenses')
 async def spendigs(message:Message,user:User):
     try:

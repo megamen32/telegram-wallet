@@ -3,6 +3,8 @@ import traceback
 
 from aiogram import types
 from peewee import fn, JOIN
+
+from bot.keyboards.default import get_default_markup
 from loader import dp, _
 from models.person import Person
 from models.transactions.Bid import Bid
@@ -40,7 +42,7 @@ async def ask_register(message:types.Message):
                 text += f'\n\t\tТрата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at} Б-с:{sum} {tr2.description} '
             await message.reply(f'Поступление {tr.amount} {tr.description} {tr.created_at} Осталось:{sum}{text}')
 
-        await message.answer(f'Доход {total_sum} Расход {total_expense} Итоговый баланс {total_sum-total_expense}')
+        await message.answer(f'Доход {total_sum} Расход {total_expense} Итоговый баланс {total_sum-total_expense}',reply_markup=get_default_markup(user))
     except:
         err=traceback.format_exc()
         await message.answer(err)

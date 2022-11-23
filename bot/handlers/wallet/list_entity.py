@@ -1,9 +1,11 @@
+import asyncio
 import logging
 import traceback
 from datetime import datetime, timedelta
 
 from aiogram.types import Message, InlineKeyboardMarkup
 
+from bot.handlers.wallet.bid_utils import bid_to_telegram
 from bot.handlers.wallet.remove_entity import create_delete_kb
 from loader import dp
 from models import User
@@ -30,7 +32,7 @@ async def list_bids_handler(message:Message,user:User):
         err = traceback.format_exc()
         logging.error(err)
         await message.answer(err)
-@dp.message_handler(i18n_text='Поступления')
+@dp.message_handler(i18n_text='Мои Поступления')
 @dp.message_handler(commands='incomes')
 async def list_incomes_handler(message:Message,user:User):
     try:
@@ -47,3 +49,10 @@ async def list_incomes_handler(message:Message,user:User):
         err = traceback.format_exc()
         logging.error(err)
         await message.answer(err)
+@dp.message_handler(commands='votes')
+@dp.message_handler(i18n_text='Голосования')
+async def list_votes(message:Message,user:User):
+    bids=Bid.select().where(Bid.closed==False).order_by(Bid.created_at)
+    for bid in bids:
+        kb, text = bid_to_telegram(bid, user.person)
+        asyncio.create_task(message.answer( text, reply_markup=kb))

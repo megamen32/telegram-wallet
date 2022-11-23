@@ -78,6 +78,7 @@ async def send_all_bid(bid):
             asyncio.create_task( bot.send_message(user.id,text,reply_markup=kb))
 
 
+
 @dp.callback_query_handler(income_cb.filter())
 async def create_bid_handler(query: Message, user: User,callback_data,state):
     try:
@@ -96,7 +97,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
         logging.error(err)
         await query.message.reply(err)
 
-@dp.message_handler(i18n_text='Заявки')
+@dp.message_handler(i18n_text='Все Заявки')
 @dp.message_handler(commands='bids')
 async def new_expanse_handler(message: Message, user: User):
 
