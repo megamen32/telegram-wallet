@@ -4,6 +4,7 @@ import traceback
 from datetime import datetime, timedelta
 
 from aiogram.types import Message, InlineKeyboardMarkup
+from peewee import DoesNotExist
 
 from bot.handlers.wallet.bid_utils import bid_to_telegram
 from bot.handlers.wallet.remove_entity import create_delete_kb
@@ -28,6 +29,8 @@ async def list_bids_handler(message:Message,user:User):
                 kb= create_delete_kb(exp)
             text=f'{exp.amount} {exp.description} {exp.created_at}\n\t\tПоступление->{exp.parent_income.amount} {exp.parent_income.description}'
             await message.answer(text,reply_markup=kb)
+    except DoesNotExist:
+        await message.answer('У вас нет заявок')
     except:
         err = traceback.format_exc()
         logging.error(err)
@@ -45,6 +48,8 @@ async def list_incomes_handler(message:Message,user:User):
                 kb= create_delete_kb(exp)
             text=f'{exp.amount} {exp.description} {exp.created_at}\n\t\t'
             await message.answer(text,reply_markup=kb)
+    except DoesNotExist:
+        await message.answer('У вас нет поступлений')
     except:
         err = traceback.format_exc()
         logging.error(err)
@@ -52,7 +57,14 @@ async def list_incomes_handler(message:Message,user:User):
 @dp.message_handler(commands='votes')
 @dp.message_handler(i18n_text='Голосования')
 async def list_votes(message:Message,user:User):
-    bids=Bid.select().where(Bid.closed==False).order_by(Bid.created_at)
-    for bid in bids:
-        kb, text = bid_to_telegram(bid, user.person)
-        asyncio.create_task(message.answer( text, reply_markup=kb))
+    try:
+        bids=Bid.select().where(Bid.closed==False).order_by(Bid.created_at)
+        for bid in bids:
+            kb, text = bid_to_telegram(bid, user.person)
+            asyncio.create_task(message.answer( text, reply_markup=kb))
+    except DoesNotExist:
+        await message.answer('Нет активных голосований')
+    except:
+        err = traceback.format_exc()
+        logging.error(err)
+        await message.answer(err)
