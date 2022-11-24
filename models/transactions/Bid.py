@@ -41,7 +41,7 @@ class Bid(TransactionBase): #vote for budget
         votes = self.get_votes()
         aprrove_rating=0
         if any(votes):
-            votes_yes = len(list(map(lambda x: x.choice == 1, votes)))
+            votes_yes = len(list(filter(lambda x: x.choice == 1, votes)))
             aprrove_rating = votes_yes / len(votes)
         return aprrove_rating
     def get_votes(self):

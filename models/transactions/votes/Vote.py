@@ -1,4 +1,6 @@
-from peewee import Model, ForeignKeyField, IntegerField
+import datetime
+
+from peewee import Model, ForeignKeyField, IntegerField, DateTimeField
 
 from models.base import  BaseModel
 from models.person import Person
@@ -9,4 +11,5 @@ class Vote(BaseModel):
     person=ForeignKeyField(Person,related_name='voters',backref='votes')
     choice=IntegerField()
     parent=ForeignKeyField(Bid, related_name='parent',backref='votes')
+    created_at=DateTimeField(default=lambda :datetime.datetime.utcnow())
 

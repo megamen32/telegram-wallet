@@ -8,7 +8,7 @@ BOT_TOKEN = config('BOT_TOKEN')
 TELEGRAM_TEST_SERVER = config('TELEGRAM_TEST_SERVER', default=False, cast=bool)
 ADMINS = [int(_) for _ in config('ADMINS', default='').split()]
 RATE_LIMIT = config('RATE_LIMIT', default=0.5, cast=float)
-
+TG_PASSWORD=config('TG_PASSWORD', default=None)
 DB_USER = config('DATABASE_USER', default=None)
 DB_PASSWORD = config('DATABASE_PASS', default=None)
 DB_HOST = config('DATABASE_HOST', default=None)
