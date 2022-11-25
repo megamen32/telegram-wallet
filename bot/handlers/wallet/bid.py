@@ -71,11 +71,16 @@ async def send_all_bid(bid):
 
 
     voters=get_voting_persons()
+    msgs = []
     for voter in voters:
         kb, text = bid_to_telegram(bid, voter)
         user=User.get_or_none(User.person==voter)
+
         if user is not None:
-            asyncio.create_task( bot.send_message(user.id,text,reply_markup=kb))
+
+            msg=await bot.send_message(user.id,text,reply_markup=kb)
+            msgs+=[{'message_id':msg.message_id,'chat_id':msg.chat.id}]
+    await dp.storage.set_data(chat=bid.wallet.id,user=bid.id, data={'msgs':msgs})
 
 
 
