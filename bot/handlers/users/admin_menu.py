@@ -62,7 +62,7 @@ async def change_role(message: Message):
 @dp.message_handler(commands='run', is_admin=True)
 async def change_role(message: Message):
     try:
-        res=eval(message.text.split(' ',1)[0])
+        res=eval(message.text.split(' ',1)[1])
         await message.answer(res)
     except:
         err = traceback.format_exc()
