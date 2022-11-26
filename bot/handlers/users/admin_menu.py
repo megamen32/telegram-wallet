@@ -11,6 +11,7 @@ from bot.handlers.chat.chat import desk_st
 from loader import dp, bot, config, _
 from models import User
 from models.person import Role, get_role, Person
+from models.transactions.WalletPermission import WalletPermission
 from services.users import count_users, get_users
 
 
@@ -64,14 +65,21 @@ async def change_role_handler(query:CallbackQuery,user:User,callback_data):
     role_str=callback_data['role']
     role=get_role(role_str)
 
-    user=User.get_by_id(id)
-    person=Person.get(Person.name==user.person.name)
+    us=User.get_by_id(id)
+    person=Person.get(Person.name==us.person.name)
     person.role=role
     person.save()
-    user.person=person
-    user.is_admin=role_str=='admin'
-    user.save()
-    await query.message.answer(f'{person.name} role is {role.role}')
+    us.person=person
+    us.is_admin=role_str=='admin'
+    us.save()
+    if role_str=='guest':
+        WalletPermission.delete().join(Person).where(Person==us.person).execute()
+    else:
+        perms= WalletPermission.select().join(Person).where(Person == user.person)
+        for per in perms:
+            WalletPermission.create(person=person,wallet=per.wallet)
+
+    await query.message.answer(f'{person.name} назначена роль {role.role}')
 
 
 @dp.message_handler(i18n_text='Count active users 👥', is_admin=True)

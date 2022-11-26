@@ -61,7 +61,7 @@ async def create_expanse_handler(query: types.CallbackQuery,user:User, callback_
 
     if bid.closed:
         if not bid.approved: await query.message.reply(f'Заявка уже отклонена')
-        expance=Expanse.create(parent_bid=bid,amount=amount,author=user.person,wallet=get_default_wallet(),description=description)
+        expance=Expanse.create(parent_bid=bid,amount=amount,author=user.person,wallet=user.wallet,description=description)
         kb =  create_delete_kb(expance)
         await query.message.reply(f'Новая трата в размере {amount}, создана! ',reply_markup=kb)
         await state.finish()

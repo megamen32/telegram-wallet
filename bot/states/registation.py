@@ -26,10 +26,10 @@ async def name_handler(message: Message, user: User,state:FSMContext):
         user.person=person
     user.save()
     await state.finish()
-    text = _('Hi {full_name}!\n'
-             'Choose your language').format(full_name=name)
+    text = _('Привет {full_name}!\n'
+             'Выбери свой язык').format(full_name=name)
     await message.answer(text, reply_markup=get_language_inline_markup())
 @dp.message_handler(state=get_registration_state())
 async def name_handler(message: Message, user: User):
-    text = _(f'Введено неправильное имя, пожалуйста введи Фамилию Имя Очество')
+    text = _(f'Введено неправильное имя, пожалуйста введи Фамилию Имя Отчество')
     await message.answer(text)

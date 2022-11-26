@@ -17,11 +17,11 @@ async def _start(message: Message, user: User):
     if user.person is None:
         await ask_register(message)
     else:
-        await message.reply(_(f"Hello {user.person.name}"))
+        await message.reply(_(f"Привет %s").format(user.person.name))
 
 @dp.message_handler(commands='name')
 async def ask_register(message):
-    text = _('Enter your nmae: Lastname Name Fathername 🆘')
+    text = _('Введите ваше имя: Фамилию Имя Очество 🆘')
     await dp.current_state().set_state(get_registration_state())
     await message.reply(text)
 

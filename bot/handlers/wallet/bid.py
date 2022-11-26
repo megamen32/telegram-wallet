@@ -92,7 +92,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
         data=await state.get_data()
         description=data['description']
         parent_income=Income.get(Income.id==income_id)
-        bid = Bid.create(amount=amount, author=user.person, wallet=get_default_wallet(),parent_income=parent_income,description=description)
+        bid = Bid.create(amount=amount, author=user.person, wallet=user.wallet,parent_income=parent_income,description=description)
 
         await query.message.reply(f'Новое Голосование в размере {amount} с целью {bid.description} начато',reply_markup=create_delete_kb(bid))
         await state.finish()
@@ -107,7 +107,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
 async def new_expanse_handler(message: Message, user: User):
 
     try:
-        bids=Bid.select()
+        bids=Bid.select().where(Bid.wallet==user.wallet)
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
@@ -122,6 +122,8 @@ async def new_expanse_handler(message: Message, user: User):
             for tr2 in expanses:
                 spendings -= tr2.amount
                 texts += f'\n\t\tТрата -{tr2.amount} от"{tr2.author.name}" {tr2.created_at} Б-с:{spendings} {tr2.description} '
+        if not any(texts):
+            texts=f'В кошельке {user.wallet.id} нет заявок'
         await message.reply(texts)
     except:
         err = traceback.format_exc()

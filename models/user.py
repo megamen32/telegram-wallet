@@ -4,6 +4,7 @@ from peewee import BigIntegerField, CharField, BooleanField, DateTimeField,Forei
 
 from .base import BaseModel
 from .person import Person, Role, get_role
+from .transactions.Transaction import Wallet
 
 
 class User(BaseModel):
@@ -12,6 +13,7 @@ class User(BaseModel):
     person=ForeignKeyField(Person,default=None,null=True)
     username = CharField(default=None, null=True)
     language = CharField(default='en')
+    wallet = ForeignKeyField(Wallet,default=None,null=True)
 
     is_admin = BooleanField(default=False)
 
