@@ -11,6 +11,8 @@ from loader import dp
 from models import User
 from models.transactions.Income import Income
 from models.transactions.Transaction import get_default_wallet
+from models.transactions.WalletPermission import WalletPermission
+
 
 @dp.message_handler(i18n_text='Поступление ✅')
 @dp.message_handler(commands='income')
