@@ -84,22 +84,27 @@ add_wallet_cb = CallbackData('add_wallet', 'id')
 
 @dp.message_handler(regexp='^/\w+_wallet_user')
 async def add_wallet_user(message: types.Message, user: User):
-    wallet=user.wallet
-    users_all =list( (User
- .select().join(Person)
- .where(~fn.EXISTS(
-      WalletPermission.select().where(
-          (WalletPermission.person == Person.id) )))))
-    users_exc =list( User.select().join(Person).join(WalletPermission).where(WalletPermission.wallet == wallet))
-    if 'add' in message.text:
-        users=users_all
-    else:
-        users=users_exc
-    kb = types.InlineKeyboardMarkup()
-    for user in users:
-        btn = types.InlineKeyboardButton(f'{user.person.name}', callback_data=change_wallet_cb.new(id=wallet.id))
-        kb.add(btn)
-    await message.answer(f'выбери пользователя чтобы {"добавить" if "add" in message.text else "убрать"}', reply_markup=kb)
+    try:
+        wallet=user.wallet
+        users_all =list( (User
+     .select().join(Person)
+     .where(~fn.EXISTS(
+          WalletPermission.select().where(
+              (WalletPermission.person == Person.id) )))))
+        users_exc =list( User.select().join(Person).join(WalletPermission).where(WalletPermission.wallet == wallet))
+        if 'add' in message.text:
+            users=users_all
+        else:
+            users=users_exc
+        kb = types.InlineKeyboardMarkup()
+        for user in users:
+            btn = types.InlineKeyboardButton(f'{user.person.name}', callback_data=add_wallet_cb.new(id=user.id))
+            kb.add(btn)
+        await message.answer(f'выбери пользователя чтобы {"добавить" if "add" in message.text else "убрать"}', reply_markup=kb)
+    except:
+        err=traceback.format_exc()
+        logging.error(err)
+        await message.answer(err)
 
 
 @dp.callback_query_handler(add_wallet_cb.filter())
@@ -110,7 +115,7 @@ async def change_wallet_handler(query: types.CallbackQuery, user: User, callback
     perms= WalletPermission.get_or_none(person=us.person,wallet=wallet)
     if perms is None:
         WalletPermission.create(person=us.person,wallet=wallet)
-        await query.message.edit_text(f"{query.message.text}\n{us.person} добавлен к кошельку")
+        await query.message.edit_text(f"{query.message.text}\n{us.person} добавлен к кошельку",reply_markup=query.message.reply_markup)
     else:
-        WalletPermission.delete().where(person=us.person, wallet=wallet).execute()
-        await query.message.edit_text(f"{query.message.text}\n{us.person} удален из кошелька")
+        WalletPermission.delete().where(WalletPermission.person==us.person, WalletPermission.wallet==wallet).execute()
+        await query.message.edit_text(f"{query.message.text}\n{us.person} удален из кошелька",reply_markup=query.message.reply_markup)
