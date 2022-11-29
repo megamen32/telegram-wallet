@@ -58,7 +58,12 @@ class Bid(TransactionBase): #vote for budget
 
             try:
                 user = User.get(User.person == self.author)
-                from loader import bot
-                asyncio.create_task( bot.send_message(user.id,f'Заявка {self.description} {self.amount} Закрыта со статусом:{self.status()}'))
+                from loader import bot,dp
+                from aiogram import types
+                from bot.handlers.wallet.bid import bid_cb
+                kb=types.InlineKeyboardMarkup()
+                asyncio.create_task(dp.storage.set_data(chat=user.id,data={'amount':self.amount,'description':self.description}))
+                kb.add(types.InlineKeyboardButton(f"Создать трату на эту сумму", callback_data=bid_cb.new(bid=self.id)))
+                asyncio.create_task( bot.send_message(user.id,f'Заявка {self.description} {self.amount} Закрыта со статусом:{self.status()}',reply_markup=kb))
             except:traceback.print_exc()
         return res

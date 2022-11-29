@@ -54,7 +54,7 @@ async def new_expanse_handler(message: Message, user: User,state:FSMContext):
 @dp.callback_query_handler(bid_cb.filter())
 async def create_expanse_handler(query: types.CallbackQuery,user:User, callback_data: dict,state:FSMContext):
     bid_id=int(callback_data['bid'])
-    data=await state.get_data()
+    data=await dp.storage.get_data(chat=user.id)
     amount=data['amount']
     description=data['description']
     bid=Bid.get(Bid.id==bid_id)
