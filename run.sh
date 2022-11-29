@@ -1,0 +1,1 @@
+/home/roomhacker/PycharmProjects/telegram-wallet/venv/bin/python /home/roomhacker/PycharmProjects/telegram-wallet/webhook.py
