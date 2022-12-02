@@ -23,7 +23,7 @@ async def wallet_handler(message:types.Message,user:User):
     await message.reply('Текущий баланс')
     try:
         query = (Person
-                 .select(Person, fn.SUM(Expanse.amount).alias('transaction_amount'),fn.COUNT(Expanse.id).alias('transaction_count'),).join(WalletPermission).where(WalletPermission.wallet==user.wallet)
+                 .select(Person, fn.SUM(Expanse.amount).alias('transaction_amount'),fn.COUNT(Expanse.id).alias('transaction_count'),)
                  .join(Expanse, JOIN.LEFT_OUTER).where(Expanse.wallet==user.wallet)
                  .group_by(Person)
                  .order_by(fn.COUNT(Expanse.id).desc()))
