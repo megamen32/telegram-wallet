@@ -20,8 +20,7 @@ async def new_income_handler(message:Message,user:User,state:FSMContext):
     try:
         amount, description,err = await promt_amount(message, state,prev_handler=lambda :new_income_handler(message,user,state))
         if err: return
-        walletpr=WalletPermission.get(WalletPermission.person==user.person)
-        income=Income.create(amount=amount,author=user.person,wallet=walletpr.wallet,description=description)
+        income=Income.create(amount=amount,author=user.person,wallet=user.wallet,description=description)
         await message.reply(f'Новое Поступление в размере {amount} начислено. Описание: {income.description}',reply_markup=create_delete_kb(income))
         await state.reset_state(True)
     except:

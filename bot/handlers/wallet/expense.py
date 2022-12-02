@@ -21,7 +21,7 @@ from models.transactions.Transaction import get_default_wallet
 async def new_expanse_handler(message: Message, user: User,state:FSMContext):
 
     try:
-        bids=Bid.select().where(Bid.author == user.person, Bid.closed == True,Bid.was_used==False)
+        bids=Bid.select().where(Bid.wallet==user.wallet,Bid.author == user.person, Bid.closed == True,Bid.was_used==False)
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
@@ -73,10 +73,10 @@ async def create_expanse_handler(query: types.CallbackQuery,user:User, callback_
 @dp.message_handler(commands='expenses')
 async def spendigs(message:Message,user:User):
     try:
-        expanses=Expanse.select().where(Expanse.created_at>(datetime.now() - timedelta(days=1))).join(Bid).where(Bid.author==user.person).order_by(Expanse.created_at)
+        expanses=Expanse.select().join(Bid).where(Bid.author==user.person,Bid.wallet==user.wallet).order_by(Expanse.created_at)
         for exp in  expanses:
             kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at}\n\t\tзаявка->{exp.parent_bid.amount} {exp.parent_bid.description}'
+            text=f'{exp.amount} {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\t\tзаявка->{exp.parent_bid.amount} {exp.parent_bid.description}'
             await message.answer(text,reply_markup=kb)
         if not any(expanses): await message.answer('У вас нет трат')
     except:

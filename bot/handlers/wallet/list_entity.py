@@ -20,7 +20,7 @@ from models.transactions.votes.Vote import Vote
 @dp.message_handler(commands='mybids')
 async def list_bids_handler(message:Message,user:User):
     try:
-        expanses=Bid.select().where(Bid.author==user.person).order_by(Bid.created_at)
+        expanses=Bid.select().where(Bid.author==user.person,Bid.wallet==user.wallet).order_by(Bid.created_at)
         for exp in  expanses:
             spendings=Expanse.select().where(Expanse.parent_bid==exp)
             if any(spendings):
@@ -28,7 +28,7 @@ async def list_bids_handler(message:Message,user:User):
             else:
 
                 kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at} {exp.status()}\n'
+            text=f'{exp.amount} {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")} {exp.status()}\n'
             text+=f'\t\tПоступление->{exp.parent_income.amount} {exp.parent_income.description}'
             await message.answer(text,reply_markup=kb)
         if not any(expanses): await message.answer('У вас нет заявок')
@@ -41,14 +41,14 @@ async def list_bids_handler(message:Message,user:User):
 @dp.message_handler(commands='incomes')
 async def list_incomes_handler(message:Message,user:User):
     try:
-        expanses=Income.select().where(Income.author==user.person).order_by(Income.created_at)
+        expanses=Income.select().where(Income.author==user.person,Income.wallet==user.wallet).order_by(Income.created_at)
         for exp in  expanses:
             spendigs =  Expanse.select().join(Bid).where(Bid.parent_income==exp)
             if any(spendigs):
                 kb=InlineKeyboardMarkup()
             else:
                 kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at}\n\t\t'
+            text=f'{exp.amount} {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\t\t'
             await message.answer(text,reply_markup=kb)
         if not any(expanses):await message.answer('У вас нет поступлений')
     except DoesNotExist:
@@ -61,7 +61,7 @@ async def list_incomes_handler(message:Message,user:User):
 @dp.message_handler(i18n_text='Голосования')
 async def list_votes(message:Message,user:User):
     try:
-        bids=Bid.select().where(Bid.closed==False).order_by(Bid.created_at)
+        bids=Bid.select().where(Bid.closed==False,Bid.wallet==user.wallet).order_by(Bid.created_at)
         for bid in bids:
             kb, text = bid_to_telegram(bid, user.person)
             asyncio.create_task(message.answer( text, reply_markup=kb))

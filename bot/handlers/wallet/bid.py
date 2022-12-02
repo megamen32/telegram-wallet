@@ -30,7 +30,7 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
     try:
         amount, description,err = await promt_amount(message, state,prev_handler=lambda :new_bid_handler(message,user,state))
         if err:return
-        bids = Income.select()
+        bids = Income.select().where(Income.wallet==user.wallet)
         markup = InlineKeyboardMarkup()
         texts = ''
         for i, income in enumerate(bids):
@@ -121,7 +121,7 @@ async def new_expanse_handler(message: Message, user: User):
             spendings=bid.amount
             for tr2 in expanses:
                 spendings -= tr2.amount
-                texts += f'\n\t\tТрата -{tr2.amount} от"{tr2.author.name}" {tr2.created_at} Б-с:{spendings} {tr2.description} '
+                texts += f'\n\t\tТрата -{tr2.amount} от"{tr2.author.name}" {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{spendings} {tr2.description} '
         if not any(texts):
             texts=f'В кошельке {user.wallet.id} нет заявок'
         await message.reply(texts)

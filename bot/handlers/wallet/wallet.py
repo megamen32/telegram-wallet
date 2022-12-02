@@ -23,7 +23,7 @@ async def wallet_handler(message:types.Message,user:User):
     await message.reply('Текущий баланс')
     try:
         query = (Person
-                 .select(Person, fn.SUM(Expanse.amount).alias('transaction_amount'),fn.COUNT(Expanse.id).alias('transaction_count'),)
+                 .select(Person, fn.SUM(Expanse.amount).alias('transaction_amount'),fn.COUNT(Expanse.id).alias('transaction_count'),).join(WalletPermission).where(WalletPermission.wallet==user.wallet)
                  .join(Expanse, JOIN.LEFT_OUTER).where(Expanse.wallet==user.wallet)
                  .group_by(Person)
                  .order_by(fn.COUNT(Expanse.id).desc()))
@@ -32,10 +32,10 @@ async def wallet_handler(message:types.Message,user:User):
             await message.answer(text)
         wallet=user.wallet
 
-        trs=Income.select().where(Income.wallet==wallet).order_by(Income.created_at)
+        incomes=Income.select().where(Income.wallet == wallet).order_by(Income.created_at)
         total_sum=0
         total_expense=0
-        for tr in trs:
+        for tr in incomes:
             exp = Expanse.select().join(Bid).where(Bid.parent_income==tr).order_by(Expanse.created_at)
             exp=list(exp)
             sum=tr.amount
@@ -44,8 +44,8 @@ async def wallet_handler(message:types.Message,user:User):
             for tr2 in exp:
                 total_expense+=tr2.amount
                 sum-=tr2.amount
-                text += f'\n\t\tТрата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at} Б-с:{sum} {tr2.description} '
-            await message.reply(f'Поступление {tr.amount} {tr.description} {tr.created_at} Осталось:{sum}{text}')
+                text += f'\n\t\tТрата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{sum} {tr2.description} \n'
+            await message.reply(f'Поступление {tr.amount} {tr.description} {tr.created_at.strftime("%d/%m/%Y, %H:%M")} Осталось:{sum}{text}')
 
         await message.answer(f'Доход {total_sum} Расход {total_expense} Итоговый баланс {total_sum-total_expense}',reply_markup=get_default_markup(user))
     except:
