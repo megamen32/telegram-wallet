@@ -24,7 +24,7 @@ from models.transactions.Transaction import get_default_wallet
 bid_cb=CallbackData('choice_bid','bid')
 income_cb=CallbackData('choice_income','id','amount')
 
-@dp.message_handler(i18n_text='Заявка 📲')
+@dp.message_handler(i18n_text='📲 Заявка')
 @dp.message_handler(commands='bid')
 async def new_bid_handler(message: Message, user: User,state:FSMContext):
     try:
