@@ -55,9 +55,9 @@ async def promt_amount(message, state,prev_handler=None):
     description=''
     try:
         data = await state.get_data()
+        if 'prev_handler' in data:raise Exception()
         amount = data['amount'] or float(re.findall(r'(\d+)', message.text)[0])
         description=data['description']
-        err = False
     except:
         await state.set_state(get_amount_state())
         await state.update_data(prev_handler=prev_handler)
