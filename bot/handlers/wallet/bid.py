@@ -30,17 +30,14 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
     try:
         amount, description,err = await promt_amount(message, state,prev_handler=lambda :new_bid_handler(message,user,state))
         if err:return
-        bids = Income.select().where(Income.wallet==user.wallet)
+        incomes = Income.select(Income).where(Income.wallet == user.wallet)
         markup = InlineKeyboardMarkup()
         texts = ''
-        for i, income in enumerate(bids):
-            expanses = list(
-                Expanse.select(Expanse).where(Expanse.parent_bid == income))
-            totals=0
-            if any(expanses) and expanses[0].id is not None:
-                totals = sum(map(operator.attrgetter('amount'), expanses))
+        for i, income in enumerate(incomes):
+            totals=income.get_expanses_amount()
+            if income.amount - totals < amount: continue
             texts += f'{i})  {income.description} {income.amount}-{totals}={income.amount-totals} id:{income.id} от {income.author.name}\n'
-            kb = InlineKeyboardButton(f"{i}) {income.amount} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
+            kb = InlineKeyboardButton(f"{i}) {income.amount-totals} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
             markup.add(kb)
         await message.reply(texts, reply_markup=markup)
     except:

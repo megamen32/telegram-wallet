@@ -1,6 +1,6 @@
-# <p align="center">Powerful aiogram template
+# <p align="center">Telegram wallet 
 
-<p align="center"><a href="https://core.telegram.org/bots/api">Telegram Bot API</a> template, with <a href="https://docs.aiogram.dev/en/latest/">aiogram</a>, <a href="http://docs.peewee-orm.com/en/latest/index.html">peewee</a> and <a href="https://www.docker.com/">docker</a></p>
+<p align="center"><a href="https://core.telegram.org/bots/api">Telegram Bot API</a> template, with <a href="https://docs.aiogram.dev/en/latest/">aiogram</a>, <a href="http://docs.peewee-orm.com/en/latest/index.html">peewee</a> 
 
 
 <img src="https://i.imgur.com/h0Umovn.png" width="100%" height="100%" />
@@ -47,11 +47,12 @@
 
 <a href="https://github.com/netbriler/aiogram-peewee-template/generate">Click here to create repository from this template</a> or: 
 ```bash
-$ git clone https://github.com/netbriler/aiogram-peewee-template <your project name>
+$ git clone https://github.com/megamen32/telegram-wallet <your project name>
 $ cd <your project name>
 $ pip install -r requirements.txt
 
 # initialize database
+$ python create_tables.py
 $ pw_migrate migrate --database $(python _get_database_url.py) --directory ./migrations
 # or if you have make you can simply type 
 $ make db_upgrade

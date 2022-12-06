@@ -36,15 +36,9 @@ async def wallet_handler(message:types.Message,user:User):
         total_sum=0
         total_expense=0
         for tr in incomes:
-            exp = Expanse.select().join(Bid).where(Bid.parent_income==tr).order_by(Expanse.created_at)
-            exp=list(exp)
-            sum=tr.amount
-            total_sum += sum
-            text=''
-            for tr2 in exp:
-                total_expense+=tr2.amount
-                sum-=tr2.amount
-                text += f'\n\t\tТрата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{sum} {tr2.description} \n'
+            text=tr.get_expanses_text()
+            total_sum+=tr.amount
+            total_expense+=tr.get_expanses_amount()
             await message.reply(f'Поступление {tr.amount} {tr.description} {tr.created_at.strftime("%d/%m/%Y, %H:%M")} Осталось:{sum}{text}')
 
         await message.answer(f'Доход {total_sum} Расход {total_expense} Итоговый баланс {total_sum-total_expense}',reply_markup=get_default_markup(user))
