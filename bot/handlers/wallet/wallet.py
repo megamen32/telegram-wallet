@@ -20,7 +20,7 @@ from models.transactions.WalletPermission import WalletPermission
 @dp.message_handler(i18n_text='💰 Кошелёк')
 @dp.message_handler(commands='wallet')
 async def wallet_handler(message:types.Message,user:User):
-    await message.reply('Залезаю в карман...', parse_mode='Markdown')
+    await message.reply('Текущий баланс')
     try:
         query = (Person
                  .select(Person, fn.SUM(Expanse.amount).alias('transaction_amount'),fn.COUNT(Expanse.id).alias('transaction_count'),)
