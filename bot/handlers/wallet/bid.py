@@ -41,6 +41,7 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
             markup.add(kb)
         if not any(texts):
             texts = f'Не найдено входящих переводов достаточных чтобы создать заявку на сумму {amount}'
+            await state.reset_state()
         await message.reply(texts, reply_markup=markup)
     except:
         err = traceback.format_exc()
