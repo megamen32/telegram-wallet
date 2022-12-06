@@ -28,7 +28,7 @@ async def wallet_handler(message:types.Message,user:User):
                  .group_by(Person)
                  .order_by(fn.COUNT(Expanse.id).desc()))
         for person in query:
-            text=(_('*%s* – *%s* трат на сумму: *%s*') % (person.name, person.transaction_count,person.transaction_amount,))
+            text=(_('%s – *%s* трат на сумму: %s') % (person.name, person.transaction_count,person.transaction_amount,))
             await message.answer(text,parse_mode='Markdown')
         wallet=user.wallet
 
@@ -40,7 +40,7 @@ async def wallet_handler(message:types.Message,user:User):
             total_sum+=tr.amount
             exps_amount = tr.get_expanses_amount()
             total_expense+= exps_amount
-            text_ = f'*{tr.description}*\n*Остаток: *{tr.amount-exps_amount}*\n\nПоступление *{tr.amount}* {tr.created_at.strftime("%d/%m/%Y, %H:%M")}\n\n{text}*'
+            text_ = f'*{tr.description}*\nОстаток: *{tr.amount-exps_amount}*\n\nПоступление *{tr.amount}*, {tr.created_at.strftime("%d/%m/%Y, %H:%M")}\n\n{text}'
             await message.reply(text_,parse_mode='Markdown')
 
         await message.answer(f'*Текущий баланс: {total_sum-total_expense}*\n\nДоход: *{total_sum}*\nРасход: *{total_expense}*',parse_mode='Markdown',reply_markup=get_default_markup(user))
