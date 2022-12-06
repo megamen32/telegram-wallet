@@ -39,6 +39,8 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
             texts += f'{i})  {income.description} {income.amount}-{totals}={income.amount-totals} id:{income.id} от {income.author.name}\n'
             kb = InlineKeyboardButton(f"{i}) {income.amount-totals} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
             markup.add(kb)
+        if not any(texts):
+            texts = f'Не найдено входящих переводов достаточных чтобы создать заявку на сумму {amount}'
         await message.reply(texts, reply_markup=markup)
     except:
         err = traceback.format_exc()
