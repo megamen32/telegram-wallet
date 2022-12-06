@@ -38,8 +38,10 @@ async def wallet_handler(message:types.Message,user:User):
         for tr in incomes:
             text=tr.get_expanses_text()
             total_sum+=tr.amount
-            total_expense+=tr.get_expanses_amount()
-            await message.reply(f'Поступление {tr.amount} {tr.description} {tr.created_at.strftime("%d/%m/%Y, %H:%M")} Осталось:{sum}{text}')
+            exps_amount = tr.get_expanses_amount()
+            total_expense+= exps_amount
+            text_ = f'Поступление {tr.amount} {tr.description} {tr.created_at.strftime("%d/%m/%Y, %H:%M")} Осталось:{tr.amount-exps_amount}{text}'
+            await message.reply(text_)
 
         await message.answer(f'Доход {total_sum} Расход {total_expense} Итоговый баланс {total_sum-total_expense}',reply_markup=get_default_markup(user))
     except:

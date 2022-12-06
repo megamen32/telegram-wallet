@@ -16,6 +16,8 @@ class Income(Transaction):
     def get_expanses_text(self):
         exp=self.get_expanses()
         text = ''
+        sums=self.amount
         for tr2 in exp:
-            text += f'\n\t\tТрата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{sum} {tr2.description} \n'
+            sums-=tr2.amount
+            text += f'\n\t\tТрата -{tr2.amount} от:"{tr2.author.name}" {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{sums} {tr2.description} \n'
         return text
