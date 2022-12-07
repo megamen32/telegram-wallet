@@ -103,7 +103,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
         logging.error(err)
         await query.message.reply(err)
 
-@dp.message_handler(i18n_text='Все заявки')
+@dp.message_handler(i18n_text='❓ Все заявки')
 @dp.message_handler(commands='bids')
 async def new_expanse_handler(message: Message, user: User):
 

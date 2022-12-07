@@ -58,7 +58,7 @@ async def list_incomes_handler(message:Message,user:User):
         logging.error(err)
         await message.answer(err)
 @dp.message_handler(commands='votes')
-@dp.message_handler(i18n_text='Голосования')
+@dp.message_handler(i18n_text='📢 Голосования')
 async def list_votes(message:Message,user:User):
     try:
         bids=Bid.select().where(Bid.closed==False,Bid.wallet==user.wallet).order_by(Bid.created_at)
