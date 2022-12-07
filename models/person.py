@@ -1,18 +1,13 @@
 from models.base import BaseModel
 from peewee import DoesNotExist,OperationalError, CharField, ForeignKeyField
 
-roles=['guest','user','voting','admin']
+roles=['guest','user','admin']
 
-def get_voting_roles():
- return roles[roles.index('voting'):]
+
 class Role(BaseModel):
     role=CharField(index=True,unique=True)
     def is_admin(self):
         return self.role=='admin'
-    def is_voting(self):
-        return self.role in get_voting_roles()
-    def is_user(self):
-        return self.role in get_voting_roles() or self.role=='user'
 
     def __repr__(self) -> str:
         return f'<role {self.role}>'

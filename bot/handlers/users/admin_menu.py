@@ -51,7 +51,7 @@ async def change_role(message: Message):
 
                 kb=InlineKeyboardMarkup()
                 for role in Role.select():
-                    if role==user.person.role:continue
+                    #if role==user.person.role:continue
                     kb.add(InlineKeyboardButton(f'Поменять роль на {role.role}',callback_data=change_role_cb.new(id=user.id,role=role.role)))
                 await message.answer(text,reply_markup=kb)
             except:logging.error(traceback.format_exc())
