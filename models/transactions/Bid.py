@@ -20,7 +20,7 @@ class Bid(TransactionBase): #vote for budget
     parent_income=ForeignKeyField(Income,backref='expenses')
     def is_complete(self):
         votes=self.get_votes()
-        users=get_voting_persons()
+        users=get_voting_persons(self.wallet)
         return len(votes)>=len(users)
     def is_approved(self):
         aprrove_rating = self.calc_aprove_rating()

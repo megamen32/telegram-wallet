@@ -71,7 +71,7 @@ async def promt_amount(message, state,prev_handler=None):
 async def send_all_bid(bid):
 
 
-    voters=get_voting_persons()
+    voters=get_voting_persons(bid.wallet)
     msgs = []
     for voter in voters:
         kb, text = bid_to_telegram(bid, voter)

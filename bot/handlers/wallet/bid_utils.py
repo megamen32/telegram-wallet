@@ -11,7 +11,7 @@ def bid_to_telegram(bid,person=None):
     kb = InlineKeyboardMarkup()
     votes = list(Vote.select().where(Vote.parent == bid))
     text = f'Заявка на сумму {bid.amount} от {bid.author.name} со средств {bid.parent_income.description} {bid.parent_income.amount}\n\t\tОписание: {bid.description}\nГолоса:'
-    persons = get_voting_persons()
+    persons = get_voting_persons(bid.wallet)
     votes=bid.get_votes()
     for v in votes:
         if v.person in persons:

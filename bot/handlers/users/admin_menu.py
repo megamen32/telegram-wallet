@@ -59,15 +59,7 @@ async def change_role(message: Message):
         err = traceback.format_exc()
         logging.error(err)
         await message.answer(err)
-@dp.message_handler(commands='run', is_admin=True)
-async def change_role(message: Message):
-    try:
-        res=eval(message.text.split(' ',1)[1])
-        await message.answer(res)
-    except:
-        err = traceback.format_exc()
-        logging.error(err)
-        await message.answer(err)
+
 @dp.callback_query_handler(change_role_cb.filter())
 async def change_role_handler(query:CallbackQuery,user:User,callback_data):
     id=callback_data['id']
@@ -90,7 +82,15 @@ async def change_role_handler(query:CallbackQuery,user:User,callback_data):
 
     await query.message.answer(f'{person.name} назначена роль {role.role}')
 
-
+@dp.message_handler(commands='run', is_admin=True)
+async def run_hadnler(message: Message):
+    try:
+        res=eval(message.text.split(' ',1)[1])
+        await message.answer(res)
+    except:
+        err = traceback.format_exc()
+        logging.error(err)
+        await message.answer(err)
 @dp.message_handler(i18n_text='Count active users 👥', is_admin=True)
 @dp.message_handler(commands=['count_active_users'], is_admin=True)
 async def _active_users_count(message: Message):
