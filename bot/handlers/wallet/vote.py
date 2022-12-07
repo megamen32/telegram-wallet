@@ -70,10 +70,10 @@ async def add_voting_user(message: types.Message, user: User):
           VotePermission.select().where(
               (VotePermission.person == Person.id) )))))
         users_all =list( User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet))
-        if 'add' in message.text or _('Изменить роли') in message.text:
-            users=users_all
-        else:
+        if 'add' not in message.text or _('Изменить роли') not in message.text:
             users=users_exc
+        else:
+            users=users_all
         kb = types.InlineKeyboardMarkup()
         for user in users:
             btn = types.InlineKeyboardButton(f'{user.person.name}', callback_data=add_voting_cb.new(id=user.id))
