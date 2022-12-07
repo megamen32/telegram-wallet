@@ -1,7 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 from loader import _
-from models.transactions.votes.VotePermision import VotePermision
+from models.transactions.votes.VotePermission import VotePermission
 
 
 def get_default_markup(user):
@@ -16,7 +16,7 @@ def get_default_markup(user):
         markup.add(_('change role'))
         markup.add(_('Count active users 👥'))
 
-    if VotePermision.get_or_none(VotePermision.person==user.person):
+    if VotePermission.get_or_none(VotePermission.person == user.person):
         markup.add(_('Изменить роли'))
 
     if len(markup.keyboard) < 1:

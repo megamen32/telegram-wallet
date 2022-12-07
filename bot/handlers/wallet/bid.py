@@ -14,12 +14,12 @@ from bot.handlers.wallet.remove_entity import create_delete_kb
 from bot.states.get_amount import get_amount_state
 from loader import dp, bot
 from models import User
-from models.person import get_role, get_voting_roles, Person
+
 from models.transactions.Expense import Expanse
 from models.user import get_voting_persons
 from models.transactions.Bid import Bid
 from models.transactions.Income import Income
-from models.transactions.Transaction import get_default_wallet
+
 
 bid_cb=CallbackData('choice_bid','bid')
 income_cb=CallbackData('choice_income','id','amount')

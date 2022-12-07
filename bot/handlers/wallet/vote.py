@@ -11,7 +11,7 @@ from loader import dp, bot,_
 from models import User
 from models.person import Person
 from models.transactions.Bid import Bid
-from models.transactions.votes import VotePermision
+from models.transactions.votes.VotePermission import VotePermission
 from models.transactions.votes.Vote import Vote
 
 from bot.handlers.wallet.bid_utils import bid_voting_cb, bid_to_telegram
@@ -67,9 +67,9 @@ async def add_voting_user(message: types.Message, user: User):
         users_all =list( (User
      .select().join(Person)
      .where(~fn.EXISTS(
-          VotePermision.select().where(
-              (VotePermision.person == Person.id) )))))
-        users_exc =list( User.select().join(Person).join(VotePermision).where(VotePermision.wallet == wallet))
+          VotePermission.select().where(
+              (VotePermission.person == Person.id) )))))
+        users_exc =list( User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet))
         if 'add' in message.text or _('Изменить роли') in message.text:
             users=users_all
         else:
@@ -90,10 +90,10 @@ async def change_voting_handler(query: types.CallbackQuery, user: User, callback
     user_id = callback_data['id']
     us = User.get_by_id(user_id)
     wallet=user.wallet
-    perms= VotePermision.get_or_none(person=us.person,wallet=wallet)
+    perms= VotePermission.get_or_none(person=us.person,wallet=wallet)
     if perms is None:
-        VotePermision.create(person=us.person,wallet=wallet)
+        VotePermission.create(person=us.person,wallet=wallet)
         await query.message.edit_text(f"{query.message.text}\n{us.person} добавлен к кошельку",reply_markup=query.message.reply_markup)
     else:
-        VotePermision.delete().where(VotePermision.person==us.person, VotePermision.wallet==wallet).execute()
+        VotePermission.delete().where(VotePermission.person==us.person, VotePermission.wallet==wallet).execute()
         await query.message.edit_text(f"{query.message.text}\n{us.person} удален из кошелька",reply_markup=query.message.reply_markup)

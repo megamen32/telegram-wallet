@@ -7,7 +7,7 @@ from models.person import Person
 from models.transactions.Transaction import Wallet
 
 
-def VotePermision(BaseModel):
-    person = ForeignKeyField(Person,  backref='vote_permisions')
+class VotePermission(BaseModel):
+    person = ForeignKeyField(Person,  backref='vote_permissions')
     wallet = ForeignKeyField(Wallet)
     created_at = DateTimeField(default=lambda: datetime.datetime.utcnow())

@@ -5,7 +5,7 @@ from peewee import BigIntegerField, CharField, BooleanField, DateTimeField,Forei
 from .base import BaseModel
 from .person import Person, Role, get_role
 from .transactions.Transaction import Wallet
-from .transactions.votes.VotePermision import VotePermision
+from .transactions.votes.VotePermission import VotePermission
 
 
 class User(BaseModel):
@@ -28,4 +28,4 @@ class User(BaseModel):
 
 
 def get_voting_persons(wallet):
-    return list(Person.select().join(VotePermision).where(VotePermision.wallet==wallet))
+    return list(Person.select().join(VotePermission).where(VotePermission.wallet == wallet))
