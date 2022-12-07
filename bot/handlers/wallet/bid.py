@@ -3,6 +3,7 @@ import logging
 import operator
 import re
 import traceback
+from datetime import datetime, timedelta
 
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
@@ -108,11 +109,10 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
 async def new_expanse_handler(message: Message, user: User):
 
     try:
-        bids=Bid.select().where(Bid.wallet==user.wallet)
+        bids=Bid.select().where(Bid.wallet==user.wallet,Bid.time_approved>(datetime.now() - timedelta(days=30)))
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
-            bid.check_votes()
             totals = 0
             expanses = list(
                 Expanse.select(Expanse).where(Expanse.parent_bid == bid))
