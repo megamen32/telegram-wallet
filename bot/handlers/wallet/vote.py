@@ -70,7 +70,8 @@ async def add_voting_user(message: types.Message, user: User):
           VotePermission.select().where(
               (VotePermission.person == Person.id) )))))
         users_all =list( User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet))
-        if 'remove' not in message.text:
+        is_removing = 'remove' not in message.text
+        if is_removing:
             users=users_exc
         else:
             users=users_all
@@ -79,7 +80,7 @@ async def add_voting_user(message: types.Message, user: User):
 
             btn = types.InlineKeyboardButton(f'{user.person.name}', callback_data=add_voting_cb.new(id=user.id))
             kb.add(btn)
-        await message.answer(f'выбери пользователя чтобы {"добавить или /remove_voting_user чтобы убрать" if "add" in message.text else "убрать или /add_voting_user чтобы добавить"}', reply_markup=kb)
+        await message.answer(f'выбери пользователя чтобы {"добавить или /remove_voting_user чтобы убрать" if is_removing else "убрать или /add_voting_user чтобы добавить"}', reply_markup=kb)
     except:
         err=traceback.format_exc()
         logging.error(err)
