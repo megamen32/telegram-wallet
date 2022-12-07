@@ -64,12 +64,12 @@ add_voting_cb = CallbackData('add_voting', 'id')
 async def add_voting_user(message: types.Message, user: User):
     try:
         wallet=user.wallet
-        users_all =list( (User
+        users_exc =list( (User
      .select().join(Person)
      .where(~fn.EXISTS(
           VotePermission.select().where(
               (VotePermission.person == Person.id) )))))
-        users_exc =list( User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet))
+        users_all =list( User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet))
         if 'add' in message.text or _('Изменить роли') in message.text:
             users=users_all
         else:
