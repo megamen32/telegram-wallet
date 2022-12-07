@@ -109,7 +109,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
 async def new_expanse_handler(message: Message, user: User):
 
     try:
-        bids=Bid.select().where(Bid.wallet==user.wallet,Bid.time_approved>(datetime.now() - timedelta(days=30)))
+        bids=Bid.select().where(Bid.wallet==user.wallet,Bid.time_approved>(datetime.now() - timedelta(days=15)))
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
