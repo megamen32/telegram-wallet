@@ -118,14 +118,14 @@ async def new_expanse_handler(message: Message, user: User):
                 Expanse.select(Expanse).where(Expanse.parent_bid == bid))
             if any(expanses) and expanses[0].id is not None:
                 totals = sum(map(operator.attrgetter('amount'), expanses))
-            texts += f'\n{i}) {bid.author.name} {bid.amount}-{totals}={bid.amount-totals} описание: {bid.description} | {"уже закрыта" if bid.closed else "еще открыта"} счет:{bid.calc_aprove_rating()}'
+            texts += f'\n\n{i}) *{bid.amount}*-{totals}=*{bid.amount-totals}* описание:  | {bid.status()} счет:{bid.calc_aprove_rating()}\n{bid.description}\n{bid.author.name}'
             spendings=bid.amount
             for tr2 in expanses:
                 spendings -= tr2.amount
-                texts += f'\n\t\tТрата -{tr2.amount} от"{tr2.author.name}" {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{spendings} {tr2.description} '
+                texts += f'\n\t\tТрата -{tr2.amount} {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{spendings} {tr2.description} '
         if not any(texts):
             texts=f'В кошельке {user.wallet.id} нет заявок'
-        await message.reply(texts)
+        await message.reply(texts,parse_mode='Markdown')
     except:
         err = traceback.format_exc()
         logging.error(err)
