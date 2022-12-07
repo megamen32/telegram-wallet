@@ -41,7 +41,7 @@ async def _users_count(message: Message):
     await message.answer(_('Total users: {count}').format(count=count))
 
 change_role_cb=CallbackData('change_role','id','role')
-@dp.message_handler(i18n_text='change role', is_admin=True)
+@dp.message_handler(i18n_text='set admins', is_admin=True)
 async def change_role(message: Message):
     try:
         users = get_users()

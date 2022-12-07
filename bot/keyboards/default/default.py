@@ -13,7 +13,7 @@ def get_default_markup(user):
     markup.add(_('Мои заявки'),_('Мои траты'),_('Мои поступления'))
 
     if user.is_admin:
-        markup.add(_('change role'))
+        markup.add(_('set admins'))
         markup.add(_('Count active users 👥'))
 
     if VotePermission.get_or_none(VotePermission.person == user.person):
