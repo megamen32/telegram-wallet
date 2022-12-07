@@ -95,7 +95,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
         parent_income=Income.get(Income.id==income_id)
         bid = Bid.create(amount=amount, author=user.person, wallet=user.wallet,parent_income=parent_income,description=description)
 
-        await query.message.reply(f'Новое Голосование в размере {amount} с целью {bid.description} начато',reply_markup=create_delete_kb(bid))
+        await query.message.reply(f'Запущено голосование на сумму {amount} с целью {bid.description} начато',reply_markup=create_delete_kb(bid))
         await state.finish()
         await send_all_bid(bid)
     except:
@@ -103,7 +103,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
         logging.error(err)
         await query.message.reply(err)
 
-@dp.message_handler(i18n_text='Все Заявки')
+@dp.message_handler(i18n_text='Все заявки')
 @dp.message_handler(commands='bids')
 async def new_expanse_handler(message: Message, user: User):
 

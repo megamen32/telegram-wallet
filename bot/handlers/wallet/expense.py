@@ -16,7 +16,7 @@ from models.transactions.Bid import Bid
 from models.transactions.Expense import Expanse
 from models.transactions.Transaction import get_default_wallet
 
-@dp.message_handler(i18n_text='Трата 💸')
+@dp.message_handler(i18n_text='💸 Трата')
 @dp.message_handler(commands='expense')
 async def new_expanse_handler(message: Message, user: User,state:FSMContext):
 
@@ -38,7 +38,7 @@ async def new_expanse_handler(message: Message, user: User,state:FSMContext):
             markup.add(kb)
 
         if not any(texts):
-            texts='Одобренные Заявки на траты не найдены. Сначала надо создать заявку /bid'
+            texts='Сначала создай заявку на трату /bid'
             return await message.reply(texts)
         amount, description, err = await promt_amount(message, state,
                                                       prev_handler=lambda: new_expanse_handler(message, user, state))
@@ -60,25 +60,25 @@ async def create_expanse_handler(query: types.CallbackQuery,user:User, callback_
     bid=Bid.get(Bid.id==bid_id)
 
     if bid.closed:
-        if not bid.approved: await query.message.reply(f'Заявка уже отклонена')
+        if not bid.approved: await query.message.reply(f'Заявка уже отклонена.')
         expance=Expanse.create(parent_bid=bid,amount=amount,author=user.person,wallet=user.wallet,description=description)
         kb =  create_delete_kb(expance)
-        await query.message.reply(f'Новая трата в размере {amount}, создана! ',reply_markup=kb)
+        await query.message.reply(f'*Трата на сумму {amount} руб. создана!*',reply_markup=kb,parse_mode='Markdown')
         await state.finish()
     else:
         await query.message.reply(f'Заявка еще не одобрена!')
 
 
-@dp.message_handler(i18n_text='Мои Последние Траты')
+@dp.message_handler(i18n_text='Мои траты')
 @dp.message_handler(commands='expenses')
 async def spendigs(message:Message,user:User):
     try:
         expanses=Expanse.select().join(Bid).where(Bid.author==user.person,Bid.wallet==user.wallet).order_by(Expanse.created_at)
         for exp in  expanses:
             kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\t\tзаявка->{exp.parent_bid.amount} {exp.parent_bid.description}'
-            await message.answer(text,reply_markup=kb)
-        if not any(expanses): await message.answer('У вас нет трат')
+            text=f'–*{exp.amount}*, {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\t\tЗаявка –> {exp.parent_bid.amount}, {exp.parent_bid.description}'
+            await message.answer(text,reply_markup=kb,parse_mode='Markdown')
+        if not any(expanses): await message.answer('Ничего не потрачено.. пока что')
     except:
         err = traceback.format_exc()
         logging.error(err)

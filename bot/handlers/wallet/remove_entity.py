@@ -24,7 +24,7 @@ async def del_expanse_handler(query: types.CallbackQuery,user:User, callback_dat
         eval(f'{classname}.get_by_id(id).delete_instance()')
         if classname=='Bid':
             qry2=Vote.delete().where(Vote.parent==id).execute()
-        await query.message.edit_text(f'Удаленно\n{query.message.text}',reply_markup=InlineKeyboardMarkup())
+        await query.message.edit_text(f'Удалено!\n\n{query.message.text}',reply_markup=InlineKeyboardMarkup())
     except:
         err = traceback.format_exc()
         logging.error(err)

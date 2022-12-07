@@ -16,7 +16,7 @@ from models.transactions.Income import Income
 from models.transactions.votes.Vote import Vote
 
 
-@dp.message_handler(i18n_text='Мои Заявки')
+@dp.message_handler(i18n_text='Мои заявки')
 @dp.message_handler(commands='mybids')
 async def list_bids_handler(message:Message,user:User):
     try:
@@ -37,7 +37,7 @@ async def list_bids_handler(message:Message,user:User):
         err = traceback.format_exc()
         logging.error(err)
         await message.answer(err)
-@dp.message_handler(i18n_text='Мои Поступления')
+@dp.message_handler(i18n_text='Мои поступления')
 @dp.message_handler(commands='incomes')
 async def list_incomes_handler(message:Message,user:User):
     try:
@@ -48,8 +48,8 @@ async def list_incomes_handler(message:Message,user:User):
                 kb=InlineKeyboardMarkup()
             else:
                 kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\t\t'
-            await message.answer(text,reply_markup=kb)
+            text=f'{exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\n*+{exp.amount}* | {exp.description} '
+            await message.answer(text,reply_markup=kb,parse_mode='Markdown')
         if not any(expanses):await message.answer('У вас нет поступлений')
     except DoesNotExist:
         await message.answer('У вас нет поступлений')

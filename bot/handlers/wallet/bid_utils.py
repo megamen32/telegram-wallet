@@ -10,7 +10,7 @@ bid_voting_cb=CallbackData('bid_voting','bid_id','choice')
 def bid_to_telegram(bid,person=None):
     kb = InlineKeyboardMarkup()
     votes = list(Vote.select().where(Vote.parent == bid))
-    text = f'Заявка на бюджет в размере {bid.amount} от {bid.author.name} со средств {bid.parent_income.description} {bid.parent_income.amount}\n\t\tописание: {bid.description}\nГолоса:'
+    text = f'Заявка на сумму {bid.amount} от {bid.author.name} со средств {bid.parent_income.description} {bid.parent_income.amount}\n\t\tОписание: {bid.description}\nГолоса:'
     persons = get_voting_persons()
     votes=bid.get_votes()
     for v in votes:

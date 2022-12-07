@@ -46,7 +46,7 @@ async def create_vote_handler(query: Message, user: User, callback_data):
         except:
             logging.error(traceback.format_exc())
     except DoesNotExist:
-        await query.message.edit_text('Голосвание удаленно')
+        await query.message.edit_text('Голосование удалено!')
     except:
         err = traceback.format_exc()
         logging.error(err)
