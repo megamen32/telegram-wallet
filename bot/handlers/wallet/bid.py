@@ -109,15 +109,14 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
 async def new_expanse_handler(message: Message, user: User):
 
     try:
-        bids=list(Bid.select(Bid,fn.SUM(Expanse.amount).alias('sum')).where(Bid.wallet==user.wallet,Bid.time_approved>(datetime.now() - timedelta(days=30))).join(Expanse))
+        bids=list(Bid.select(Bid).where(Bid.wallet==user.wallet,Bid.time_approved>(datetime.now() - timedelta(days=30))))
         markup = InlineKeyboardMarkup()
         texts=''
         if not any(bids):
             texts=f'В кошельке {user.wallet.id} нет заявок.'
         else:
             for i,bid in enumerate(bids):
-                totals = bid.sum
-
+                totals = bid.get_expenses_amount()
                 texts += f'\n\n–––\n\n📍 *Заявка #{i}, {bid.calc_aprove_rating()*100}%, {bid.status()}*\nот {bid.author.name}\n\nℹ *{bid.description}*\nСумма заявки: *{bid.amount}*\nПотрачено: *{totals}*\n*Текущий остаток: {bid.amount-totals}*\n'
                 for tr2 in bid.get_expenses():
                     texts += f'\n💸 *–{tr2.amount}, {tr2.description}*\n{tr2.created_at.strftime("%d/%m/%Y, %H:%M")}'
