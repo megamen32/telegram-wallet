@@ -21,7 +21,7 @@ def get_default_wallet(person):
     except:
         logging.info(f'Creating wallet for {person}')
 class TransactionBase(BaseModel):
-    wallet = ForeignKeyField(Wallet, related_name='wallets')
+    wallet = ForeignKeyField(Wallet, related_name='wallets',on_delete='CASCADE')
     created_at = DateTimeField(default=lambda: datetime.utcnow())
     amount = FloatField(default=0)
     description = CharField(default='')

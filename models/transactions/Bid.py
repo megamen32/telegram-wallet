@@ -16,7 +16,7 @@ class Bid(TransactionBase):  # vote for budget
     closed = BooleanField(default=False)  # решение уже вынесено
     approved = BooleanField(default=False)  # какое решение было вынесено по заявки
     time_approved = DateTimeField(default=None, null=True)
-    parent_income = ForeignKeyField(Income, backref='expenses')
+    parent_income = ForeignKeyField(Income, backref='expenses',on_delete='CASCADE')
 
     def is_complete(self):
         votes = self.get_votes()

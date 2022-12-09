@@ -6,5 +6,5 @@ from models.transactions.Transaction import Wallet
 
 
 class WalletPermission(BaseModel):
-    wallet=ForeignKeyField(Wallet)
-    person=ForeignKeyField(Person,backref='wallets_permission')
+    wallet=ForeignKeyField(Wallet,on_delete='CASCADE')
+    person=ForeignKeyField(Person,backref='wallets_permission',on_delete='CASCADE')

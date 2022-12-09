@@ -8,6 +8,6 @@ from models.transactions.Transaction import Wallet
 
 
 class VotePermission(BaseModel):
-    person = ForeignKeyField(Person,  backref='vote_permissions')
-    wallet = ForeignKeyField(Wallet)
+    person = ForeignKeyField(Person,  backref='vote_permissions',on_delete='CASCADE')
+    wallet = ForeignKeyField(Wallet,on_delete='CASCADE')
     created_at = DateTimeField(default=lambda: datetime.datetime.utcnow())
