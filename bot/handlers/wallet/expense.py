@@ -21,18 +21,12 @@ from models.transactions.Transaction import get_default_wallet
 async def new_expanse_handler(message: Message, user: User,state:FSMContext):
 
     try:
-        bids=Bid.select().where(Bid.wallet==user.wallet,Bid.author == user.person, Bid.closed == True,Bid.was_used==False)
+        bids=Bid.select(Bid,fn.SUM(Expanse.amount).alias('sum')).where(Bid.wallet==user.wallet,Bid.author == user.person, Bid.closed == True).join(Expanse)
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
-            expanses=list(Expanse.select(Expanse,fn.SUM(Expanse.amount).alias('sum')).where(Expanse.parent_bid==bid))
-            totals=0
-            if  any(expanses) and expanses[0].id is not None:
-                totals=sum(map(operator.attrgetter('sum'),expanses))
-                if totals>=bid.amount:
-                    bid.was_used=True
-                    bid.save()
-                    continue
+            if bid.was_used:continue
+            totals=bid.get_expenses_amount()
             texts += f'{i}) {bid.author.name} {bid.amount}-{totals}={bid.amount-totals} id:{bid.id} {bid.description}\n'
             kb=InlineKeyboardButton(f"{i} {bid.amount} id:{bid.id}", callback_data=bid_cb.new(bid=bid.id))
             markup.add(kb)
@@ -76,7 +70,7 @@ async def spendigs(message:Message,user:User):
         expanses=Expanse.select().join(Bid).where(Bid.author==user.person,Bid.wallet==user.wallet).order_by(Expanse.created_at)
         for exp in  expanses:
             kb= create_delete_kb(exp)
-            text=f'–*{exp.amount}*, {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\t\tЗаявка –> {exp.parent_bid.amount}, {exp.parent_bid.description}'
+            text=f'💸*– {exp.amount}*, {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")}\n\t\tОплачено с заявки ➡ {exp.parent_bid.amount}, {exp.parent_bid.description}'
             await message.answer(text,reply_markup=kb,parse_mode='Markdown')
         if not any(expanses): await message.answer('Ничего не потрачено.. пока что')
     except:

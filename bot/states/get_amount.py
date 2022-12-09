@@ -14,7 +14,7 @@ def get_amount_state():return TransactionForm.amount
 async def amount_handler(message:types.Message,user:User,state:FSMContext):
     amount=float(message.text)
     await TransactionForm.next()
-    await message.answer('Напиши описание',reply_markup=ReplyKeyboardRemove())
+    await message.answer('Напиши описание запрашиваемого бюджета или траты:',parse_mode='Markdown',reply_markup=ReplyKeyboardRemove())
     await state.update_data(amount=amount)
 
 @dp.message_handler(state=TransactionForm.description)

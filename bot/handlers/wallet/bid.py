@@ -64,7 +64,7 @@ async def promt_amount(message, state,prev_handler=None):
         await state.set_state(get_amount_state())
         await state.update_data(prev_handler=prev_handler)
         kb = ReplyKeyboardMarkup()
-        kb.add(*(KeyboardButton(text=i) for i in range(1000, 500000, 1000)))
+        kb.add(*(KeyboardButton(text=i) for i in range(10000, 200000, 10000)))
         await message.answer('*Введите сумму:*', reply_markup=kb, parse_mode='Markdown')
     return amount, description,err
 
