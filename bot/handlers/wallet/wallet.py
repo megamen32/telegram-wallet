@@ -40,7 +40,8 @@ async def wallet_handler(message:types.Message,user:User):
             total_sum+=tr.amount
             exps_amount = tr.get_expanses_amount()
             total_expense+= exps_amount
-            if tr.amount<=exps_amount and 'all' not in message.text:continue
+            if tr.amount<=exps_amount and 'all' not in message.text:
+                continue
             text_ = f'🟢 Поступление *+{tr.amount}*, {tr.created_at.strftime("%d/%m/%Y")}\n\n*ℹ {tr.description}*\nОстаток: *{tr.amount-exps_amount} руб.*\n\n\n{text}'
             await message.reply(text_,parse_mode='Markdown')
 
