@@ -83,10 +83,10 @@ async def add_wallet_user(message: types.Message, user: User):
     try:
         wallet=user.wallet
         users_all =list( (User
-     .select().join(Person)
+     .select()
      .where(~fn.EXISTS(
           WalletPermission.select().where(
-              (WalletPermission.person == Person.id) )))))
+              (WalletPermission.person == User.person,WalletPermission.wallet==wallet) )))))
         users_exc =list( User.select().join(Person).join(WalletPermission).where(WalletPermission.wallet == wallet))
         if 'add' in message.text:
             users=users_all
