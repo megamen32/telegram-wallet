@@ -21,7 +21,7 @@ async def del_expanse_handler(query: types.CallbackQuery,user:User, callback_dat
     try:
         id=int(callback_data['id'])
         classname=(callback_data['classname'])
-        eval(f'{classname}.get_by_id(id).delete_instance()')
+        eval(f'{classname}.get_by_id(id).delete_instance(recursive=True)')
         await query.message.edit_text(f'Удалено!\n\n{query.message.text}',reply_markup=InlineKeyboardMarkup())
     except:
         err = traceback.format_exc()

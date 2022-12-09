@@ -65,7 +65,7 @@ async def add_voting_user(message: types.Message, user: User):
     try:
         wallet=user.wallet
         users_all = set(list((User
-                              .select())))
+                              .select().join(Person))))
         users_with_permisions = set(
             list(User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet)))
         users_excluded = users_all.difference(users_with_permisions)

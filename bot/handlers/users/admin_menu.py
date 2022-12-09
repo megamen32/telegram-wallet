@@ -1,6 +1,9 @@
 import asyncio
 import csv
+import imp
+import importlib
 import logging
+import re
 import traceback
 
 from aiogram.dispatcher import FSMContext
@@ -82,11 +85,48 @@ async def change_role_handler(query:CallbackQuery,user:User,callback_data):
 
     await query.message.answer(f'{person.name} назначена роль {role.role}')
 
+
+def dynamic_imp(name, class_name):
+    # find_module() method is used
+    # to find the module and return
+    # its description and path
+    try:
+        fp, path, desc = imp.find_module(name)
+
+    except ImportError:
+        print("module not found: " + name)
+
+    try:
+        # load_modules loads the module
+        # dynamically ans takes the filepath
+        # module and description as parameter
+        example_package = imp.load_module(name, fp,
+                                          path, desc)
+
+    except Exception as e:
+        print(e)
+
+    try:
+        myclass = imp.load_module("% s.% s" % (name,
+                                               class_name),
+                                  fp, path, desc)
+
+    except Exception as e:
+        print(e)
+
+    return example_package, myclass
 @dp.message_handler(commands='run', is_admin=True)
 async def run_hadnler(message: Message):
     try:
-        res=eval(message.text.split(' ',1)[1])
-        await message.answer(res)
+        to_import_txt=re.findall(r'([A-Z][a-z]+)\.',message.text)
+        if any(to_import_txt):
+            filename='create_tables.py'
+            with open(filename, "rb") as source_file:
+                code = compile(source_file.read(), filename, "exec")
+            exec(code, globals(), locals())
+        res=str(eval(message.text.split(' ',1)[1],globals(),locals()))
+        res=res.replace('<','{').replace('>','}')
+        await message.answer(text=res,parse_mode=None)
     except:
         err = traceback.format_exc()
         logging.error(err)
