@@ -92,7 +92,7 @@ async def add_wallet_user(message: types.Message, user: User):
             users=users_with_permisions
         kb = types.InlineKeyboardMarkup()
         for user in users:
-            is_permision = WalletPermission.get_or_none(WalletPermission.person == user.person)
+            is_permision = WalletPermission.get_or_none(WalletPermission.person == user.person,WalletPermission.wallet==wallet)
             perm_txt = '✓' if is_permision else '❌'
             btn = types.InlineKeyboardButton(f'{perm_txt}{user.person.name}', callback_data=add_wallet_cb.new(id=user.id))
             kb.add(btn)

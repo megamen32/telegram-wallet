@@ -76,7 +76,7 @@ async def add_voting_user(message: types.Message, user: User):
             users=list(users_excluded)
         kb = types.InlineKeyboardMarkup()
         for user in users:
-            is_permision=VotePermission.get_or_none(VotePermission.person==user.person)
+            is_permision=VotePermission.get_or_none(VotePermission.person==user.person,VotePermission.wallet==wallet)
             perm_txt='✓' if is_permision else '❌'
             btn = types.InlineKeyboardButton(f'{perm_txt} {user.person.name}', callback_data=add_voting_cb.new(id=user.id))
             kb.add(btn)
