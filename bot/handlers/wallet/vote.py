@@ -70,7 +70,7 @@ async def add_voting_user(message: types.Message, user: User):
             list(User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet)))
         users_excluded = users_all.difference(users_with_permisions)
         is_removing = 'remove' not in message.text
-        if is_removing:
+        if not is_removing:
             users=users_with_permisions
         else:
             users=list(users_excluded)
