@@ -118,7 +118,7 @@ async def new_expanse_handler(message: Message, user: User):
                 Expanse.select(Expanse).where(Expanse.parent_bid == bid))
             if any(expanses) and expanses[0].id is not None:
                 totals = sum(map(operator.attrgetter('amount'), expanses))
-            texts += f'\n\n\n📍*Заявка #{i}*\nот{bid.author.name}\nУтверждена {bid.calc_aprove_rating()*100}%\n*{bid.status()}*\n\n*{bid.description}*\n\n\nСумма заявки: *{bid.amount}*, потрачено *{totals}*\n*Текущий остаток: {bid.amount-totals}*\n'
+            texts += f'\n\n\n📍*Заявка #{i}, {bid.status()}*\nот {bid.author.name}\nУтверждена {bid.calc_aprove_rating()*100}%\n\n*{bid.description}*\nСумма заявки: *{bid.amount}*\nПотрачено: *{totals}*\n*Текущий остаток: {bid.amount-totals}*\n'
             spendings=bid.amount
             for tr2 in expanses:
                 spendings -= tr2.amount
