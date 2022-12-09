@@ -38,7 +38,7 @@ class Bid(TransactionBase):  # vote for budget
 
     @property
     def was_used(self):
-        return self.amount < self.get_expenses_amount()
+        return self.amount <= self.get_expenses_amount()
 
     def status(self):
         if self.was_used:
