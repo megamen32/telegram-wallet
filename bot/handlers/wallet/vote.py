@@ -65,10 +65,10 @@ async def add_voting_user(message: types.Message, user: User):
     try:
         wallet=user.wallet
         users_exc =list( (User
-     .select().join(Person)
+     .select()
      .where(~fn.EXISTS(
           VotePermission.select().where(
-              (VotePermission.person == Person.id,VotePermission.wallet==wallet) )))))
+              (VotePermission.person == user.person) )))))
         users_all =list( User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet))
         is_removing = 'remove' not in message.text
         if is_removing:
