@@ -87,9 +87,9 @@ async def add_wallet_user(message: types.Message, user: User):
         users_with_permisions =set(list(User.select().join(Person).join(WalletPermission).where(WalletPermission.wallet == wallet)))
         users_excluded=users_all.difference(users_with_permisions)
         if 'add' in message.text:
-            users=users_all
-        else:
             users=list(users_excluded)
+        else:
+            users=users_with_permisions
         kb = types.InlineKeyboardMarkup()
         for user in users:
             btn = types.InlineKeyboardButton(f'{user.person.name}', callback_data=add_wallet_cb.new(id=user.id))
