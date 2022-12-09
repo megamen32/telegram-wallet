@@ -109,7 +109,7 @@ async def create_bid_handler(query: Message, user: User,callback_data,state):
 async def new_expanse_handler(message: Message, user: User):
 
     try:
-        bids=list(Bid.select(Bid).where(Bid.wallet==user.wallet)
+        bids=list(Bid.select(Bid).where(Bid.wallet==user.wallet))
         markup = InlineKeyboardMarkup()
         texts=''
         if not any(bids):
