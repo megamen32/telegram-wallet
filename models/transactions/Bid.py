@@ -27,14 +27,14 @@ class Bid(TransactionBase): #vote for budget
         return aprrove_rating>0.5 and self.is_complete()
     def status(self):
         if self.was_used:
-            return 'израсходавана'
+            return 'потрачено ❌'
         if self.closed:
             if self.approved:
-                text='принята'
+                text='принята ✅'
             else:
-                text='отклонена'
+                text='отклонена ⛔'
         else:
-            text='открыта'
+            text='ждёт согласования 🟨'
         return text
 
     def calc_aprove_rating(self):
