@@ -41,7 +41,7 @@ async def new_bid_handler(message: Message, user: User,state:FSMContext):
             kb = InlineKeyboardButton(f"{i}) {income.amount-totals} id:{income.id}", callback_data=income_cb.new(id=income.id,amount=amount))
             markup.add(kb)
         if not any(texts):
-            texts = f'Не найдено входящих переводов достаточных чтобы создать заявку на сумму {amount}'
+            texts = f'Нет достаточного бюджета, чтобы создать заявку на {amount} рублей.'
             await state.reset_state()
         await message.reply(texts, reply_markup=markup)
     except:
@@ -65,7 +65,7 @@ async def promt_amount(message, state,prev_handler=None):
         await state.update_data(prev_handler=prev_handler)
         kb = ReplyKeyboardMarkup()
         kb.add(*(KeyboardButton(text=i) for i in range(1000, 500000, 1000)))
-        await message.answer('Введите число', reply_markup=kb)
+        await message.answer('*Введите сумму:*', reply_markup=kb, parse_mode='Markdown')
     return amount, description,err
 
 
@@ -122,7 +122,7 @@ async def new_expanse_handler(message: Message, user: User):
             spendings=bid.amount
             for tr2 in expanses:
                 spendings -= tr2.amount
-                texts += f'\n\t\tТрата -{tr2.amount} {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{spendings} {tr2.description} '
+                texts += f'Трата –{tr2.amount} {tr2.created_at.strftime("%d/%m/%Y, %H:%M")} Б-с:{spendings} {tr2.description} '
         if not any(texts):
             texts=f'В кошельке {user.wallet.id} нет заявок'
         await message.reply(texts,parse_mode='Markdown')
