@@ -17,7 +17,7 @@ async def _start(message: Message, user: User):
     if user.person is None:
         await ask_register(message)
     else:
-        await message.reply(_(f"Привет %s").format(user.person.name))
+        await message.reply(_(f"Привет {user.person.name}"))
 
 @dp.message_handler(commands='name')
 async def ask_register(message):
