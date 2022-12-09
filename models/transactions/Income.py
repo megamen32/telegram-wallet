@@ -19,5 +19,5 @@ class Income(Transaction):
         sums=self.amount
         for tr2 in exp:
             sums-=tr2.amount
-            text += f'*💸 –{tr2.amount}*, {tr2.created_at.strftime("%d/%m/%Y, %H:%M")}*{tr2.description}*\n от{tr2.author.name}\n\n'
+            text += f'*💸 –{tr2.amount}*, {tr2.created_at.strftime("%d/%m/%Y, %H:%M")}\n*{tr2.description}*\nот {tr2.author.name}\n\n'
         return text
