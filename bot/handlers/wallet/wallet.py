@@ -82,16 +82,14 @@ add_wallet_cb = CallbackData('add_wallet', 'id')
 async def add_wallet_user(message: types.Message, user: User):
     try:
         wallet=user.wallet
-        users_all =list( (User
-     .select().join(Person).join(WalletPermission)
-     .where(~fn.EXISTS(
-          WalletPermission.select().where(
-              (WalletPermission.wallet == wallet & User.person==user.person) )))))
-        users_exc =list( User.select().join(Person).join(WalletPermission).where(WalletPermission.wallet == wallet))
+        users_all =set(list( (User
+     .select())))
+        users_with_permisions =set(list(User.select().join(Person).join(WalletPermission).where(WalletPermission.wallet == wallet)))
+        users_excluded=users_all.difference(users_with_permisions)
         if 'add' in message.text:
             users=users_all
         else:
-            users=users_exc
+            users=list(users_excluded)
         kb = types.InlineKeyboardMarkup()
         for user in users:
             btn = types.InlineKeyboardButton(f'{user.person.name}', callback_data=add_wallet_cb.new(id=user.id))
