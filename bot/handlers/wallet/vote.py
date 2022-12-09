@@ -64,16 +64,16 @@ add_voting_cb = CallbackData('add_voting', 'id')
 async def add_voting_user(message: types.Message, user: User):
     try:
         wallet=user.wallet
-        users_exc =list( (User
-     .select()
-     .where(~fn.EXISTS(
-          VotePermission.select() ))))
-        users_all =list( User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet))
+        users_all = set(list((User
+                              .select())))
+        users_with_permisions = set(
+            list(User.select().join(Person).join(VotePermission).where(VotePermission.wallet == wallet)))
+        users_excluded = users_all.difference(users_with_permisions)
         is_removing = 'remove' not in message.text
         if is_removing:
-            users=users_exc
+            users=users_with_permisions
         else:
-            users=users_all
+            users=list(users_excluded)
         kb = types.InlineKeyboardMarkup()
         for user in users:
             is_permision=VotePermission.get_or_none(VotePermission.person==user.person)
