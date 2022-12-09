@@ -29,11 +29,11 @@ class Bid(TransactionBase):  # vote for budget
 
     def get_expenses(self):
         from models.transactions.Expense import Expanse
-        expanses = list(Expanse.select(Expanse, fn.SUM(Expanse.amount).alias('sum')).where(Expanse.parent_bid == self))
+        expanses = list(Expanse.select(Expanse).where(Expanse.parent_bid == self))
         return expanses
 
     def get_expenses_amount(self):
-        amount = sum(map(operator.attrgetter('sum'), self.get_expenses()))
+        amount = sum(map(operator.attrgetter('amount'), self.get_expenses()))
         return amount
 
     @property
