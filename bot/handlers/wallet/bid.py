@@ -122,7 +122,7 @@ async def new_expanse_handler(message: Message, user: User):
             spendings=bid.amount
             for tr2 in expanses:
                 spendings -= tr2.amount
-                texts += f'\n💸 {tr2.description}\n*–{tr2.amount}, остаток: {spendings}*\n{tr2.created_at.strftime("%d/%m/%Y, %H:%M")}'
+                texts += f'\n💸 *–{tr2.amount},*\n{tr2.created_at.strftime("%d/%m/%Y, %H:%M")}\n{tr2.description}'
         if not any(texts):
             texts=f'В кошельке {user.wallet.id} нет заявок.'
         await message.reply(texts,parse_mode='Markdown')
