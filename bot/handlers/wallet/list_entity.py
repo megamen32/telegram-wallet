@@ -21,16 +21,16 @@ from models.transactions.votes.Vote import Vote
 async def list_bids_handler(message:Message,user:User):
     try:
         expanses=Bid.select().where(Bid.author==user.person,Bid.wallet==user.wallet).order_by(Bid.created_at)
-        for exp in  expanses:
-            spendings=Expanse.select().where(Expanse.parent_bid==exp)
+        for i, bid in  enumerate(expanses):
+            spendings=Expanse.select().where(Expanse.parent_bid == bid)
             if any(spendings):
                 kb = InlineKeyboardMarkup()
             else:
 
-                kb= create_delete_kb(exp)
-            text=f'{exp.amount} {exp.description} {exp.created_at.strftime("%d/%m/%Y, %H:%M")} {exp.status()}\n'
-            text+=f'\t\tПоступление->{exp.parent_income.amount} {exp.parent_income.description}'
-            await message.answer(text,reply_markup=kb)
+                kb= create_delete_kb(bid)
+            texts=bid.get_expenses_text()
+
+            await message.answer(texts,reply_markup=kb)
         if not any(expanses): await message.answer('У вас нет заявок')
 
     except:

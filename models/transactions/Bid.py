@@ -35,6 +35,12 @@ class Bid(TransactionBase):  # vote for budget
     def get_expenses_amount(self):
         amount = sum(map(operator.attrgetter('amount'), self.get_expenses()))
         return amount
+    def get_expenses_text(bid):
+        totals=bid.get_expenses_amount()
+        texts = f'\n\n–––\n\n📍 *Заявка , {bid.calc_aprove_rating() * 100}%, {bid.status()}*\nот {bid.author.name}\n\nℹ *{bid.description}*\nСумма заявки: *{bid.amount}*\nПотрачено: *{totals}*\n*Текущий остаток: {bid.amount - totals}*\n'
+        for tr2 in bid.get_expenses():
+            texts += f'\n💸 *–{tr2.amount}, {tr2.description}*\n{tr2.created_at.strftime("%d/%m/%Y, %H:%M")}'
+        return texts
 
     @property
     def was_used(self):

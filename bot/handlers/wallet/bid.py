@@ -117,10 +117,7 @@ async def new_expanse_handler(message: Message, user: User):
             await message.reply(texts, parse_mode='Markdown')
         else:
             for i,bid in enumerate(bids):
-                totals = bid.get_expenses_amount()
-                texts = f'\n\n–––\n\n📍 *Заявка #{i}, {bid.calc_aprove_rating()*100}%, {bid.status()}*\nот {bid.author.name}\n\nℹ *{bid.description}*\nСумма заявки: *{bid.amount}*\nПотрачено: *{totals}*\n*Текущий остаток: {bid.amount-totals}*\n'
-                for tr2 in bid.get_expenses():
-                    texts += f'\n💸 *–{tr2.amount}, {tr2.description}*\n{tr2.created_at.strftime("%d/%m/%Y, %H:%M")}'
+                texts=bid.get_expenses_text()
 
                 await message.reply(texts,parse_mode='Markdown')
 
