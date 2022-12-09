@@ -77,8 +77,9 @@ async def add_voting_user(message: types.Message, user: User):
             users=users_all
         kb = types.InlineKeyboardMarkup()
         for user in users:
-
-            btn = types.InlineKeyboardButton(f'{user.person.name}', callback_data=add_voting_cb.new(id=user.id))
+            is_permision=VotePermission.get_or_none(VotePermission.person==user.person)
+            perm_txt='✓' if is_permision else '❌'
+            btn = types.InlineKeyboardButton(f'{perm_txt} {user.person.name}', callback_data=add_voting_cb.new(id=user.id))
             kb.add(btn)
         await message.answer(f'выбери пользователя чтобы {"добавить или /remove_voting_user чтобы убрать" if is_removing else "убрать или /add_voting_user чтобы добавить"}', reply_markup=kb)
     except:
