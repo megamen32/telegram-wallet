@@ -30,7 +30,7 @@ async def list_bids_handler(message:Message,user:User):
                 kb= create_delete_kb(bid)
             texts=bid.get_expenses_text()
 
-            await message.answer(texts,reply_markup=kb)
+            await message.answer(texts,reply_markup=kb,parse_mode='Markdown')
         if not any(expanses): await message.answer('У вас нет заявок')
 
     except:
