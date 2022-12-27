@@ -25,7 +25,6 @@ async def new_expanse_handler(message: Message, user: User,state:FSMContext):
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
-            if bid.was_used:continue
             totals=bid.sum
             texts += f'{i}) {bid.author.name} {bid.amount}-{totals}={bid.amount-totals} id:{bid.id} {bid.description}\n'
             kb=InlineKeyboardButton(f"{i} {bid.amount} id:{bid.id}", callback_data=bid_cb.new(bid=bid.id))
