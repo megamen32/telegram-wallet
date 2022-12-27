@@ -21,7 +21,7 @@ from models.transactions.Transaction import get_default_wallet
 async def new_expanse_handler(message: Message, user: User,state:FSMContext):
 
     try:
-        bids=Bid.select(Bid,fn.SUM(Expanse.amount).alias('sum')).where(Bid.wallet==user.wallet,Bid.author == user.person).join(Expanse)
+        bids=Bid.select(Bid,fn.SUM(Expanse.amount).alias('sum')).where(Bid.wallet==user.wallet,Bid.author == user.person)
         markup = InlineKeyboardMarkup()
         texts=''
         for i,bid in enumerate(bids):
