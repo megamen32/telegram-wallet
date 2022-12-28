@@ -36,7 +36,7 @@ async def new_expanse_handler(message: Message, user: User,state:FSMContext):
             return await message.reply(texts)
         amount, description, err = await promt_amount(message, state,
                                                       prev_handler=lambda: new_expanse_handler(message, user, state))
-        if err: return
+        if err: return await message.reply(f'Открытые заявки:\n{texts}')
         await state.update_data(amount=amount,description=description)
         await message.reply(texts,reply_markup=markup)
     except:
